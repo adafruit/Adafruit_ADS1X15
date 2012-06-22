@@ -149,3 +149,74 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   return readRegister(ADS1015_REG_POINTER_CONVERT) >> 4;  
 }
 
+/**************************************************************************/
+/*! 
+    @brief  Reads the 12-bit conversion results, measuring the voltage
+            difference between the P (AIN0) and N (AIN1) input.  Generates
+            a signed 12-bit value since the difference can be either
+            positive or negative.
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
+  // Start with default values
+  uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
+                    ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
+                    ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
+                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+
+  // Set PGA/voltage range
+  config |= ADS1015_REG_CONFIG_PGA_6_144V;            // +/- 6.144V range (limited to VDD +0.3V max!)
+
+  // Set channels
+  config |= ADS1015_REG_CONFIG_MUX_DIFF_0_1;          // AIN0 = P, AIN1 = N
+
+  // Set 'start single-conversion' bit
+  config |= ADS1015_REG_CONFIG_OS_SINGLE;
+
+  // Write config register to the ADC
+  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+
+  // Wait for the conversion to complete
+  delay(1);
+
+  // Read the conversion results
+  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Reads the 12-bit conversion results, measuring the voltage
+            difference between the P (AIN2) and N (AIN3) input.  Generates
+            a signed 12-bit value since the difference can be either
+            positive or negative.
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
+  // Start with default values
+  uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
+                    ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
+                    ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
+                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+
+  // Set PGA/voltage range
+  config |= ADS1015_REG_CONFIG_PGA_6_144V;            // +/- 6.144V range (limited to VDD +0.3V max!)
+
+  // Set channels
+  config |= ADS1015_REG_CONFIG_MUX_DIFF_2_3;          // AIN2 = P, AIN3 = N
+
+  // Set 'start single-conversion' bit
+  config |= ADS1015_REG_CONFIG_OS_SINGLE;
+
+  // Write config register to the ADC
+  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+
+  // Wait for the conversion to complete
+  delay(1);
+
+  // Read the conversion results
+  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+}
