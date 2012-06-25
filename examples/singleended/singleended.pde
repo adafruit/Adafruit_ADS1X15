@@ -9,7 +9,7 @@ void setup(void)
   Serial.println("Hello!");
   
   Serial.println("Getting single-ended readings from AIN0..3");
-  Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV");
+  Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV)");
   ads1015.begin();
 }
 

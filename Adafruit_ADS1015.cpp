@@ -220,3 +220,67 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
   // Read the conversion results
   return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
 }
+
+/**************************************************************************/
+/*!
+    @brief  Sets up the comparator to operate in basic mode, causing the
+            ALERT/RDY pin to assert (go from high to low) when the ADC
+            value exceeds the specified threshold.
+
+            This will also set the ADC in continuous conversion mode.
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
+{
+  uint16_t value;
+
+  // Start with default values
+  uint16_t config = ADS1015_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
+                    ADS1015_REG_CONFIG_CLAT_LATCH   | // Latching mode
+                    ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
+                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_MODE_CONTIN  | // Continuous conversion mode
+                    ADS1015_REG_CONFIG_PGA_6_144V   | // +/- 6.144V range (limited to VDD +0.3V max!)
+                    ADS1015_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+
+  // Set single-ended input channel
+  switch (channel)
+  {
+    case (0):
+      config |= ADS1015_REG_CONFIG_MUX_SINGLE_0;
+      break;
+    case (1):
+      config |= ADS1015_REG_CONFIG_MUX_SINGLE_1;
+      break;
+    case (2):
+      config |= ADS1015_REG_CONFIG_MUX_SINGLE_2;
+      break;
+    case (3):
+      config |= ADS1015_REG_CONFIG_MUX_SINGLE_3;
+      break;
+  }
+
+  // Set the high threshold register
+  writeRegister(ADS1015_REG_POINTER_HITHRESH, threshold << 4);
+
+  // Write config register to the ADC
+  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+}
+
+/**************************************************************************/
+/*!
+    @brief  In order to clear the comparator, we need to read the
+            conversion results.  This function reads the last conversion
+            results without changing the config value.
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::getLastConversionResults()
+{
+  // Wait for the conversion to complete
+  delay(1);
+
+  // Read the conversion results
+  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+}
+
