@@ -6,8 +6,11 @@
 
     Driver for the ADS1015 ADC
 
-    This is a library for the Adafruit MPL115A2 breakout
-    ----> https://www.adafruit.com/products/???
+    This is a library for the Adafruit ADS1015 breakout
+    ----> https://www.adafruit.com/products/1083
+    Also supports the Adafruit ADS1115 breakout board 
+    ----> https://www.adafruit.com/products/1085
+
 
     Adafruit invests time and resources providing this open source code,
     please support Adafruit and open-source hardware by purchasing
@@ -15,7 +18,16 @@
 
     @section  HISTORY
 
-    v1.0 - First release
+    v1.0 - First release fails with ADS1115 due to slower conversion rate for 16 bit
+    v1.1 - Rick Sellens - created a mask for maximum conversion rate which is 
+           860 SPS on the 1115 and 3300 SPS on the 1015, and made it the default in 
+           the code. Changed the delay from 1 ms to 2 ms to give the 1115 time to 
+           complete conversion. Slicker would be to watch ALERT/RDY but that would 
+           require another pin.
+
+           The 1115 sometimes returns -1 or -2 for a SE input that's grounded so 
+           the function really should return a signed integer and divide by 16 rather 
+           than right shift 4 to scale. Switched others to /16 as well.
 */
 /**************************************************************************/
 #if ARDUINO >= 100
@@ -102,7 +114,7 @@ void Adafruit_ADS1015::begin() {
     @brief  Gets a single-ended ADC reading from the specified channel
 */
 /**************************************************************************/
-uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
+int16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   if (channel > 3)
   {
     return 0;
@@ -113,7 +125,7 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_MAX_SPS   | // MAX_ samples per second (default)
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
@@ -143,10 +155,10 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   writeRegister(ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(2);
 
   // Read the conversion results
-  return readRegister(ADS1015_REG_POINTER_CONVERT) >> 4;  
+  return (int16_t) readRegister(ADS1015_REG_POINTER_CONVERT) / 16;  
 }
 
 /**************************************************************************/
@@ -163,7 +175,7 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_MAX_SPS   | // MAX_ samples per second (default)
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
@@ -179,10 +191,10 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
   writeRegister(ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(2);
 
   // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  return (int16_t) readRegister(ADS1015_REG_POINTER_CONVERT) /16;  
 }
 
 /**************************************************************************/
@@ -199,7 +211,7 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_MAX_SPS   | // MAX_ samples per second (default)
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
@@ -215,10 +227,10 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
   writeRegister(ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(2);
 
   // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  return (int16_t) readRegister(ADS1015_REG_POINTER_CONVERT) / 16;  
 }
 
 /**************************************************************************/
@@ -239,7 +251,7 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
                     ADS1015_REG_CONFIG_CLAT_LATCH   | // Latching mode
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_MAX_SPS   | // MAX_ samples per second (default)
                     ADS1015_REG_CONFIG_MODE_CONTIN  | // Continuous conversion mode
                     ADS1015_REG_CONFIG_PGA_6_144V   | // +/- 6.144V range (limited to VDD +0.3V max!)
                     ADS1015_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
@@ -278,9 +290,9 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
 int16_t Adafruit_ADS1015::getLastConversionResults()
 {
   // Wait for the conversion to complete
-  delay(1);
+  delay(2);
 
   // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  return (int16_t) readRegister(ADS1015_REG_POINTER_CONVERT) / 16;  
 }
 

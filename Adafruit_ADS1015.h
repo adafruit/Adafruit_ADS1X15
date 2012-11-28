@@ -5,7 +5,9 @@
     @license  BSD (see license.txt)
 
     This is a library for the Adafruit ADS1015 breakout board
-    ----> https://www.adafruit.com/products/???
+    ----> https://www.adafruit.com/products/1083
+    Also supports the Adafruit ADS1115 breakout board 
+    ----> https://www.adafruit.com/products/1085
 
     Adafruit invests time and resources providing this open source code,
     please support Adafruit and open-source hardware by purchasing
@@ -14,6 +16,7 @@
     @section  HISTORY
 
     v1.0  - First release
+    v1.1  - see cpp file
 */
 /**************************************************************************/
 
@@ -29,6 +32,11 @@
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
     #define ADS1015_ADDRESS                 (0x48)    // 1001 000 (ADDR = GND)
+    #define ADS1015_ADDRESS_GND             (0x48)    // 1001 000 (ADDR = GND)
+    #define ADS1015_ADDRESS_VDD             (0x49)    // 1001 001 (ADDR = VDD)
+    #define ADS1015_ADDRESS_SDA             (0x4A)    // 1001 010 (ADDR = SDA)
+    #define ADS1015_ADDRESS_SCL             (0x4B)    // 1001 011 (ADDR = SCL)
+    
 /*=========================================================================*/
 
 /*=========================================================================
@@ -71,14 +79,15 @@
     #define ADS1015_REG_CONFIG_MODE_CONTIN  (0x0000)  // Continuous conversion mode
     #define ADS1015_REG_CONFIG_MODE_SINGLE  (0x0100)  // Power-down single-shot mode (default)
 
-    #define ADS1015_REG_CONFIG_DR_MASK      (0x00E0)  
-    #define ADS1015_REG_CONFIG_DR_128SPS    (0x0000)  // 128 samples per second
-    #define ADS1015_REG_CONFIG_DR_250SPS    (0x0020)  // 250 samples per second
-    #define ADS1015_REG_CONFIG_DR_490SPS    (0x0040)  // 490 samples per second
-    #define ADS1015_REG_CONFIG_DR_920SPS    (0x0050)  // 920 samples per second
-    #define ADS1015_REG_CONFIG_DR_1600SPS   (0x0080)  // 1600 samples per second (default)
-    #define ADS1015_REG_CONFIG_DR_2400SPS   (0x00A0)  // 2400 samples per second
-    #define ADS1015_REG_CONFIG_DR_3300SPS   (0x00C0)  // 3300 samples per second
+    #define ADS1015_REG_CONFIG_DR_MASK      (0x00E0)  // Data rates different for 1015 / 1115
+    #define ADS1015_REG_CONFIG_DR_128SPS    (0x0000)  //  128 /   8 samples per second
+    #define ADS1015_REG_CONFIG_DR_250SPS    (0x0020)  //  250 /  16 samples per second
+    #define ADS1015_REG_CONFIG_DR_490SPS    (0x0040)  //  490 /  32 samples per second
+    #define ADS1015_REG_CONFIG_DR_920SPS    (0x0050)  //  920 /  64 samples per second
+    #define ADS1015_REG_CONFIG_DR_1600SPS   (0x0080)  // 1600 / 128 samples per second (default)
+    #define ADS1015_REG_CONFIG_DR_2400SPS   (0x00A0)  // 2400 / 250 samples per second
+    #define ADS1015_REG_CONFIG_DR_3300SPS   (0x00C0)  // 3300 / 475 samples per second
+    #define ADS1015_REG_CONFIG_DR_MAX_SPS   (0x00E0)  // 3300 / 860 samples per second
 
     #define ADS1015_REG_CONFIG_CMODE_MASK   (0x0010)
     #define ADS1015_REG_CONFIG_CMODE_TRAD   (0x0000)  // Traditional comparator with hysteresis (default)
@@ -103,7 +112,7 @@ class Adafruit_ADS1015{
  public:
   Adafruit_ADS1015();
   void begin(void);
-  uint16_t readADC_SingleEnded(uint8_t channel);
+  int16_t readADC_SingleEnded(uint8_t channel);
   int16_t  readADC_Differential_0_1(void);
   int16_t  readADC_Differential_2_3(void);
   void     startComparator_SingleEnded(uint8_t channel, int16_t threshold);
