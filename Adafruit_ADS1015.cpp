@@ -4,7 +4,7 @@
     @author   K.Townsend (Adafruit Industries)
     @license  BSD (see license.txt)
 
-    Driver for the ADS1015 ADC
+    Driver for the ADS1015/ADS1115 ADC
 
     This is a library for the Adafruit MPL115A2 breakout
     ----> https://www.adafruit.com/products/???
@@ -59,8 +59,8 @@ static void i2cwrite(uint8_t x) {
     @brief  Writes 16-bits to the specified destination register
 */
 /**************************************************************************/
-static void writeRegister(uint8_t reg, uint16_t value) {
-  Wire.beginTransmission(ADS1015_ADDRESS);
+static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
+  Wire.beginTransmission(i2cAddress);
   i2cwrite((uint8_t)reg);
   i2cwrite((uint8_t)(value>>8));
   i2cwrite((uint8_t)(value & 0xFF));
@@ -72,20 +72,37 @@ static void writeRegister(uint8_t reg, uint16_t value) {
     @brief  Writes 16-bits to the specified destination register
 */
 /**************************************************************************/
-static uint16_t readRegister(uint8_t reg) {
-  Wire.beginTransmission(ADS1015_ADDRESS);
+static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
+  Wire.beginTransmission(i2cAddress);
   i2cwrite(ADS1015_REG_POINTER_CONVERT);
   Wire.endTransmission();
-  Wire.requestFrom(ADS1015_ADDRESS, 2);
+  Wire.requestFrom(i2cAddress, (uint8_t)2);
   return ((i2cread() << 8) | i2cread());  
 }
 
 /**************************************************************************/
 /*!
-    @brief  Instantiates a new ADS1015 class
+    @brief  Instantiates a new ADS1015 class w/appropriate properties
 */
 /**************************************************************************/
-Adafruit_ADS1015::Adafruit_ADS1015() {
+Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) 
+{
+   m_i2cAddress = i2cAddress;
+   m_conversionDelay = ADS1015_CONVERSIONDELAY;
+   m_bitShift = 4;
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Instantiates a new ADS1115 class w/appropriate properties
+*/
+/**************************************************************************/
+Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
+{
+   m_i2cAddress = i2cAddress;
+   m_conversionDelay = ADS1115_CONVERSIONDELAY;
+   m_bitShift = 0;
 }
 
 /**************************************************************************/
@@ -140,20 +157,21 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   config |= ADS1015_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(m_conversionDelay);
 
   // Read the conversion results
-  return readRegister(ADS1015_REG_POINTER_CONVERT) >> 4;  
+  // Shift 12-bit results right 4 bits for the ADS1015
+  return readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;  
 }
 
 /**************************************************************************/
 /*! 
-    @brief  Reads the 12-bit conversion results, measuring the voltage
+    @brief  Reads the conversion results, measuring the voltage
             difference between the P (AIN0) and N (AIN1) input.  Generates
-            a signed 12-bit value since the difference can be either
+            a signed value since the difference can be either
             positive or negative.
 */
 /**************************************************************************/
@@ -176,20 +194,21 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
   config |= ADS1015_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(m_conversionDelay);
 
   // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  // Shift 12-bit results right 4 bits for the ADS1015
+  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);  
 }
 
 /**************************************************************************/
 /*! 
-    @brief  Reads the 12-bit conversion results, measuring the voltage
+    @brief  Reads the conversion results, measuring the voltage
             difference between the P (AIN2) and N (AIN3) input.  Generates
-            a signed 12-bit value since the difference can be either
+            a signed value since the difference can be either
             positive or negative.
 */
 /**************************************************************************/
@@ -212,13 +231,13 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
   config |= ADS1015_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(1);
+  delay(m_conversionDelay);
 
-  // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  // Shift 12-bit results right 4 bits for the ADS1015
+  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);  
 }
 
 /**************************************************************************/
@@ -262,10 +281,11 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
   }
 
   // Set the high threshold register
-  writeRegister(ADS1015_REG_POINTER_HITHRESH, threshold << 4);
+  // Shift 12-bit results left 4 bits for the ADS1015
+  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_HITHRESH, threshold << m_bitShift);
 
   // Write config register to the ADC
-  writeRegister(ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 }
 
 /**************************************************************************/
@@ -278,9 +298,10 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
 int16_t Adafruit_ADS1015::getLastConversionResults()
 {
   // Wait for the conversion to complete
-  delay(1);
+  delay(m_conversionDelay);
 
   // Read the conversion results
-  return (int16_t)(readRegister(ADS1015_REG_POINTER_CONVERT) >> 4);  
+  // Shift 12-bit results right 4 bits for the ADS1015
+  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);
 }
 

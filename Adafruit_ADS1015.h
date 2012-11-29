@@ -14,6 +14,7 @@
     @section  HISTORY
 
     v1.0  - First release
+    v1.1  - Added ADS1115 support - W. Earl
 */
 /**************************************************************************/
 
@@ -29,6 +30,13 @@
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
     #define ADS1015_ADDRESS                 (0x48)    // 1001 000 (ADDR = GND)
+/*=========================================================================*/
+
+/*=========================================================================
+    CONVERSION DELAY (in mS)
+    -----------------------------------------------------------------------*/
+    #define ADS1015_CONVERSIONDELAY         (1)
+    #define ADS1115_CONVERSIONDELAY         (8)
 /*=========================================================================*/
 
 /*=========================================================================
@@ -99,15 +107,31 @@
     #define ADS1015_REG_CONFIG_CQUE_NONE    (0x0003)  // Disable the comparator and put ALERT/RDY in high state (default)
 /*=========================================================================*/
 
-class Adafruit_ADS1015{
+class Adafruit_ADS1015
+{
+protected:
+   // Instance-specific properties
+   uint8_t m_i2cAddress;
+   uint8_t m_conversionDelay;
+   uint8_t m_bitShift;
+
  public:
-  Adafruit_ADS1015();
+  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS);
   void begin(void);
   uint16_t readADC_SingleEnded(uint8_t channel);
   int16_t  readADC_Differential_0_1(void);
   int16_t  readADC_Differential_2_3(void);
   void     startComparator_SingleEnded(uint8_t channel, int16_t threshold);
   int16_t  getLastConversionResults();
+
+ private:
+};
+
+// Derive from ADS1105 & override construction to set properties
+class Adafruit_ADS1115 : public Adafruit_ADS1015
+{
+ public:
+  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
 
  private:
 };
