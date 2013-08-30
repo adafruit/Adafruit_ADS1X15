@@ -90,8 +90,8 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress)
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
+   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
 }
-
 
 /**************************************************************************/
 /*!
@@ -103,15 +103,36 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
    m_bitShift = 0;
+   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
 }
 
 /**************************************************************************/
 /*!
-    @brief  Setups the HW (reads coefficients values, etc.)
+    @brief  Sets up the HW (reads coefficients values, etc.)
 */
 /**************************************************************************/
 void Adafruit_ADS1015::begin() {
   Wire.begin();
+}
+
+/**************************************************************************/
+/*!
+    @brief  Sets the gain and input voltage range
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::setGain(adsGain_t gain)
+{
+  m_gain = gain;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets a gain and input voltage range
+*/
+/**************************************************************************/
+adsGain_t Adafruit_ADS1015::getGain()
+{
+  return m_gain;
 }
 
 /**************************************************************************/
@@ -134,7 +155,7 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
-  config |= ADS1015_REG_CONFIG_PGA_6_144V;            // +/- 6.144V range (limited to VDD +0.3V max!)
+  config |= m_gain;
 
   // Set single-ended input channel
   switch (channel)
@@ -185,8 +206,8 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
-  config |= ADS1015_REG_CONFIG_PGA_6_144V;            // +/- 6.144V range (limited to VDD +0.3V max!)
-
+  config |= m_gain;
+                    
   // Set channels
   config |= ADS1015_REG_CONFIG_MUX_DIFF_0_1;          // AIN0 = P, AIN1 = N
 
@@ -222,7 +243,7 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
-  config |= ADS1015_REG_CONFIG_PGA_6_144V;            // +/- 6.144V range (limited to VDD +0.3V max!)
+  config |= m_gain;
 
   // Set channels
   config |= ADS1015_REG_CONFIG_MUX_DIFF_2_3;          // AIN2 = P, AIN3 = N
@@ -251,8 +272,6 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
 /**************************************************************************/
 void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
 {
-  uint16_t value;
-
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
                     ADS1015_REG_CONFIG_CLAT_LATCH   | // Latching mode
@@ -260,9 +279,11 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
                     ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
                     ADS1015_REG_CONFIG_MODE_CONTIN  | // Continuous conversion mode
-                    ADS1015_REG_CONFIG_PGA_6_144V   | // +/- 6.144V range (limited to VDD +0.3V max!)
                     ADS1015_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
 
+  // Set PGA/voltage range
+  config |= m_gain;
+                    
   // Set single-ended input channel
   switch (channel)
   {
