@@ -221,8 +221,22 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
   delay(m_conversionDelay);
 
   // Read the conversion results
-  // Shift 12-bit results right 4 bits for the ADS1015
-  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);  
+  uint16_t res = readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+  if (m_bitShift == 0)
+  {
+    return (int16_t)res;
+  }
+  else
+  {
+    // Shift 12-bit results right 4 bits for the ADS1015,
+    // making sure we keep the sign bit intact
+    if (res > 0x07FF)
+    {
+      // negative number - extend the sign to 16th bit
+      res |= 0xF000;
+    }
+    return (int16_t)res;
+  }
 }
 
 /**************************************************************************/
@@ -257,8 +271,23 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
-  // Shift 12-bit results right 4 bits for the ADS1015
-  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);  
+  // Read the conversion results
+  uint16_t res = readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+  if (m_bitShift == 0)
+  {
+    return (int16_t)res;
+  }
+  else
+  {
+    // Shift 12-bit results right 4 bits for the ADS1015,
+    // making sure we keep the sign bit intact
+    if (res > 0x07FF)
+    {
+      // negative number - extend the sign to 16th bit
+      res |= 0xF000;
+    }
+    return (int16_t)res;
+  }
 }
 
 /**************************************************************************/
@@ -322,7 +351,21 @@ int16_t Adafruit_ADS1015::getLastConversionResults()
   delay(m_conversionDelay);
 
   // Read the conversion results
-  // Shift 12-bit results right 4 bits for the ADS1015
-  return (int16_t)(readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift);
+  uint16_t res = readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+  if (m_bitShift == 0)
+  {
+    return (int16_t)res;
+  }
+  else
+  {
+    // Shift 12-bit results right 4 bits for the ADS1015,
+    // making sure we keep the sign bit intact
+    if (res > 0x07FF)
+    {
+      // negative number - extend the sign to 16th bit
+      res |= 0xF000;
+    }
+    return (int16_t)res;
+  }
 }
 
