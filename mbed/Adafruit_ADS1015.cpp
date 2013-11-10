@@ -58,7 +58,7 @@ uint16_t Adafruit_ADS1015::readRegister(uint8_t i2cAddress, uint8_t reg) {
 /**************************************************************************/
 Adafruit_ADS1015::Adafruit_ADS1015(I2C* i2c, uint8_t i2cAddress) 
 {
-  // shift 7 bit address 1 left: read expects 8 bit address, see I2C.h
+  // shift 7 bit address 1 left: mbed i2c lib expects 8 bit address, see I2C.h
    m_i2cAddress = i2cAddress << 1;
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
@@ -73,7 +73,7 @@ Adafruit_ADS1015::Adafruit_ADS1015(I2C* i2c, uint8_t i2cAddress)
 /**************************************************************************/
 Adafruit_ADS1115::Adafruit_ADS1115(I2C* i2c, uint8_t i2cAddress)
 {
-  // shift 7 bit address 1 left: read expects 8 bit address, see mbed's I2C.h
+  // shift 7 bit address 1 left: mbed i2c expects 8 bit address, see mbed's I2C.h
   m_i2cAddress = i2cAddress << 1;
   m_conversionDelay = ADS1115_CONVERSIONDELAY;
   m_bitShift = 0;
