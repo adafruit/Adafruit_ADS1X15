@@ -9,7 +9,7 @@ void setup(void)
   Serial.begin(9600);
   Serial.println("Hello!");
   
-  Serial.println("Getting differential reading from AIN0 (P) and AIN1 (N)");
+  Serial.println("Getting differential reading from different pins: 0-1, 0-3, 1-3 and 2-3");
   Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV/ADS1015, 0.1875mV/ADS1115)");
   
   // The ADC input range (or gain) can be changed via the following
@@ -30,15 +30,23 @@ void setup(void)
 
 void loop(void)
 {
-  int16_t results;
+  int16_t results0_1, results0_3, results1_3, results2_3;
   
   /* Be sure to update this value based on the IC and the gain settings! */
   float   multiplier = 3.0F;    /* ADS1015 @ +/- 6.144V gain (12-bit results) */
   //float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
 
-  results = ads.readADC_Differential_0_1();  
-    
-  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(results * multiplier); Serial.println("mV)");
+  results0_1 = ads.readADC_Differential_0_1();
+  Serial.print("Differential 0-1: "); Serial.print(results0_1); Serial.print("("); Serial.print(results0_1 * multiplier); Serial.println("mV)");
+
+  results0_3 = ads.readADC_Differential_0_3();
+  Serial.print("Differential 0-3: "); Serial.print(results0_3); Serial.print("("); Serial.print(results0_3 * multiplier); Serial.println("mV)");
+
+  results1_3 = ads.readADC_Differential_1_3();
+  Serial.print("Differential 1-3: "); Serial.print(results1_3); Serial.print("("); Serial.print(results1_3 * multiplier); Serial.println("mV)");
+
+  results2_3 = ads.readADC_Differential_2_3();
+  Serial.print("Differential 2-3: "); Serial.print(results2_3); Serial.print("("); Serial.print(results2_3 * multiplier); Serial.println("mV)");
 
   delay(1000);
 }
