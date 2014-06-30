@@ -191,12 +191,14 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
 /**************************************************************************/
 /*! 
     @brief  Reads the conversion results, measuring the voltage
-            difference between the P (AIN0) and N (AIN1) input.  Generates
-            a signed value since the difference can be either
-            positive or negative.
+            difference between the P and N input (actual AINx depends
+			on mode). Generates a signed value since the difference
+			can be either positive or negative.
+			Yves Cheneval (cheneval@gmail.com), June 29, 2014
+			based on original
 */
 /**************************************************************************/
-int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
+int16_t Adafruit_ADS1015::readADC_Differential(int mode) {
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
@@ -209,7 +211,7 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
   config |= m_gain;
                     
   // Set channels
-  config |= ADS1015_REG_CONFIG_MUX_DIFF_0_1;          // AIN0 = P, AIN1 = N
+  config |= mode;
 
   // Set 'start single-conversion' bit
   config |= ADS1015_REG_CONFIG_OS_SINGLE;
@@ -242,52 +244,56 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
 /**************************************************************************/
 /*! 
     @brief  Reads the conversion results, measuring the voltage
+            difference between the P (AIN0) and N (AIN1) input.  Generates
+            a signed value since the difference can be either
+            positive or negative.
+			Yves Cheneval (cheneval@gmail.com), June 29, 2014
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
+  // AIN0 = P, AIN1 = N
+  return readADC_Differential(ADS1015_REG_CONFIG_MUX_DIFF_0_1);
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Reads the conversion results, measuring the voltage
+            difference between the P (AIN0) and N (AIN3) input.  Generates
+            a signed value since the difference can be either
+            positive or negative.
+			Yves Cheneval (cheneval@gmail.com), June 29, 2014
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::readADC_Differential_0_3() {
+  // AIN0 = P, AIN3 = N
+  return readADC_Differential(ADS1015_REG_CONFIG_MUX_DIFF_0_3);
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Reads the conversion results, measuring the voltage
+            difference between the P (AIN1) and N (AIN3) input.  Generates
+            a signed value since the difference can be either
+            positive or negative.
+			Yves Cheneval (cheneval@gmail.com), June 29, 2014
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1015::readADC_Differential_1_3() {
+  // AIN1 = P, AIN3 = N
+  return readADC_Differential(ADS1015_REG_CONFIG_MUX_DIFF_1_3);
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Reads the conversion results, measuring the voltage
             difference between the P (AIN2) and N (AIN3) input.  Generates
             a signed value since the difference can be either
             positive or negative.
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
-  // Start with default values
-  uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
-                    ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
-                    ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-                    ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
-                    ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set channels
-  config |= ADS1015_REG_CONFIG_MUX_DIFF_2_3;          // AIN2 = P, AIN3 = N
-
-  // Set 'start single-conversion' bit
-  config |= ADS1015_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
-
-  // Wait for the conversion to complete
-  delay(m_conversionDelay);
-
-  // Read the conversion results
-  uint16_t res = readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
-  if (m_bitShift == 0)
-  {
-    return (int16_t)res;
-  }
-  else
-  {
-    // Shift 12-bit results right 4 bits for the ADS1015,
-    // making sure we keep the sign bit intact
-    if (res > 0x07FF)
-    {
-      // negative number - extend the sign to 16th bit
-      res |= 0xF000;
-    }
-    return (int16_t)res;
-  }
+  // AIN2 = P, AIN3 = N
+  return readADC_Differential(ADS1015_REG_CONFIG_MUX_DIFF_2_3);
 }
 
 /**************************************************************************/
