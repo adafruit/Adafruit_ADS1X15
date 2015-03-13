@@ -69,10 +69,10 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
 
 /**************************************************************************/
 /*!
-    @brief  Writes 16-bits to the specified destination register
+    @brief  Read 16-bits from the conversion register (ALWAYS signed, even in single-ended mode)
 */
 /**************************************************************************/
-static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
+static int16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
   Wire.beginTransmission(i2cAddress);
   i2cwrite(ADS1015_REG_POINTER_CONVERT);
   Wire.endTransmission();
@@ -140,7 +140,7 @@ adsGain_t Adafruit_ADS1015::getGain()
     @brief  Gets a single-ended ADC reading from the specified channel
 */
 /**************************************************************************/
-uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
+int16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   if (channel > 3)
   {
     return 0;
