@@ -191,7 +191,6 @@ class Adafruit_ADS1015
 protected:
    // Instance-specific properties
    uint8_t   m_i2cAddress;
-   int16_t   m_conversionDelay;
    uint8_t   m_bitShift;
    adsGain_t m_gain                = GAIN_DEFAULT;  /* +/- 6.144V range (limited to VDD +0.3V max!) */
    adsSPS_t  m_SPS                 = DR_DEFAULT_SPS;
@@ -215,16 +214,15 @@ protected:
   void      setSPS(adsSPS_t gain);
   adsSPS_t  getSPS(void);
   float     voltsPerBit(void);
-  int16_t   getConversionDelay(void);
-  void      setConversionDelay(void);
   float     readADC_SingleEnded_V(uint8_t);
   float     readADC_Differential_0_1_V(void);
   float     readADC_Differential_0_3_V(void);
   float     readADC_Differential_1_3_V(void);
   float     readADC_Differential_2_3_V(void);
-  void      overRideConversionDelay(int16_t);
 
  private:
+   void      waitForConversion();
+
 };
 
 // Derive from ADS1105 & override construction to set properties

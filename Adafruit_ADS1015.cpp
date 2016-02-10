@@ -31,6 +31,8 @@
 		   In startComparator_SingleEnded explicitly set the low threshold to the default.
 		   Added methods that return actual voltage as a float.
 		   Renamed constants that were common to both chips to ADS1X15....
+	v1.2.1 Modified by soligen2010. Removed explicit conversion delays and instead poll the config
+	       register by 1 ms intervals to check when conversion is complete
 		   
 */
 /**************************************************************************/
@@ -85,96 +87,12 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
 
 /**************************************************************************/
 /*!
-    @brief  Gets the current conversion delay setting
-*/
-/**************************************************************************/
-int16_t Adafruit_ADS1015::getConversionDelay() {
-return m_conversionDelay;
-}
-
-/**************************************************************************/
-/*!
-    @brief  Sets the appropriate conversion delay for the chip based on the 
-	        data rate. This is set to the next highest millisecond from the theoretical.
-			This setting is in milliseconds.  microseconds are not used for the delay because the 
-			the delay() function for ESP8266 includes a yield that is not with delayMicroseconds()
-*/
-/**************************************************************************/
-void Adafruit_ADS1015::setConversionDelay() {
-  if (m_bitShift == ADS1015_CONV_REG_BIT_SHIFT_4) {            // for ADS1015
-    switch(m_SPS)
-    {
-      case ADS1015_DR_128SPS:
-        m_conversionDelay = 9;
-        break;
-      case ADS1015_DR_250SPS:
-        m_conversionDelay = 6;    
-        break;
-      case ADS1015_DR_490SPS:
-        m_conversionDelay = 4;
-        break;
-      case ADS1015_DR_920SPS:
-        m_conversionDelay = 3;
-        break;
-      case ADS1015_DR_1600SPS:
-        m_conversionDelay = 2;
-        break;
-      case ADS1015_DR_2400SPS:
-        m_conversionDelay = 1;
-        break;
-      case ADS1015_DR_3300SPS:
-        m_conversionDelay = 1;
-        break;
-      case ADS1115_DR_860SPS:        //included for ADS1015 just in case this bit pattern is set. same as 3300 SPS
-        m_conversionDelay = 1;
-        break;
-      default:
-        m_conversionDelay = 9;
-        break;
-    }
-  }
-  else {                            // for ADS1115
-	switch(m_SPS)
-	{
-	  case ADS1115_DR_8SPS:
-		m_conversionDelay = 131;
-		break;
-	  case ADS1115_DR_16SPS:
-		m_conversionDelay = 66;
-		break;
-	  case ADS1115_DR_32SPS:
-		m_conversionDelay = 33;
-		break;
-	  case ADS1115_DR_64SPS:
-		m_conversionDelay = 17;
-		break;
-	  case ADS1115_DR_128SPS:
-		m_conversionDelay = 9;
-		break;
-	  case ADS1115_DR_250SPS:
-		m_conversionDelay = 6;
-		break;
-	  case ADS1115_DR_475SPS:
-		m_conversionDelay = 4;
-		break;
-	  case ADS1115_DR_860SPS:
-		m_conversionDelay = 3;
-		break;
-	  default:
-		m_conversionDelay = 131;
-		break;
-	}
-  }
-}
-
-/**************************************************************************/
-/*!
     @brief  Reads 16-bits to the specified destination register
 */
 /**************************************************************************/
 static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
   Wire.beginTransmission(i2cAddress);
-  i2cwrite(ADS1X15_REG_POINTER_CONVERT);
+  i2cwrite(reg);
   Wire.endTransmission();
   Wire.requestFrom(i2cAddress, (uint8_t)2);
   return ((i2cread() << 8) | i2cread());  
@@ -189,7 +107,6 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress)
 {
    m_i2cAddress = i2cAddress;
    m_bitShift = ADS1015_CONV_REG_BIT_SHIFT_4;
-   setConversionDelay();
 }
 
 /**************************************************************************/
@@ -201,7 +118,6 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
 {
    m_i2cAddress = i2cAddress;
    m_bitShift = ADS1115_CONV_REG_BIT_SHIFT_0;
-   setConversionDelay();
 }
 
 /**************************************************************************/
@@ -254,7 +170,6 @@ adsGain_t Adafruit_ADS1015::getGain()
 void Adafruit_ADS1015::setSPS(adsSPS_t SPS)
 {
   m_SPS = SPS;
-  setConversionDelay();
 }
 
 /**************************************************************************/
@@ -336,7 +251,7 @@ int16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
   
   // Wait for the conversion to complete
-  delay(m_conversionDelay);
+  waitForConversion();
 
   return getLastConversionResults();                                      // conversion delay is included in this method
 }
@@ -373,8 +288,8 @@ int16_t Adafruit_ADS1015::readADC_Differential(adsDiffMux_t regConfigDiffMUX) {
   writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
   
   // Wait for the conversion to complete
-  delay(m_conversionDelay);
-
+  waitForConversion();
+  
   return getLastConversionResults();                                      // conversion delay is included in this method
 }
 
@@ -494,7 +409,6 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
                     ADS1X15_REG_CONFIG_CLAT_LATCH   | // Latching mode
                     ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1X15_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1X15_REG_CONFIG_MODE_CONTIN  | // Continuous conversion mode
                     ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
 
   // Set PGA/voltage range
@@ -516,20 +430,22 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
   // Write config register to the ADC
   writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
   
-  // Wait for the first conversion to complete
-  delay(m_conversionDelay);
-
 }
 
 /**************************************************************************/
 /*!
-    @brief  Explicitly sets the conversion delay (in milliseconds).  
-	        This will be reset when the gain is changed.
+    @brief  Poll the device each millisecond until the conversion is done.  
+	        Using delay is important for an ESP8266 becasue it yeilds to the
+			allow network operations to run.
 */
 /**************************************************************************/
-void Adafruit_ADS1015::overRideConversionDelay(int16_t delay)
+void Adafruit_ADS1015::waitForConversion()
 {
-  m_conversionDelay = delay;
+  do {
+	  delay(1);
+	 } 
+	 while (ADS1X15_REG_CONFIG_OS_BUSY == (readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG) & ADS1X15_REG_CONFIG_OS_MASK));
+            // Stop when the config register OS bit changes to 1
 }
 
 /**************************************************************************/
