@@ -114,9 +114,12 @@ void runTest()
   Serial.print("Single 3: "); Serial.print(results2_3); Serial.print("("); Serial.print(results2_3 * multiplier); Serial.println("mV)");
   Serial.println(1000.0F*ads.readADC_SingleEnded_V(3));
 
+  Serial.print("Read Time Microseconds: ");
+  uint32_t sampleTime = micros();
+  results2_3 = ads.readADC_SingleEnded(3);
+  Serial.println(micros() - sampleTime);
   Serial.println();
 
   delay(2000);
 }
-
 

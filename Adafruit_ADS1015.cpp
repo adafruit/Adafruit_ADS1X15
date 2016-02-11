@@ -441,8 +441,10 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
 /**************************************************************************/
 void Adafruit_ADS1015::waitForConversion()
 {
+  delay(0);                // delay(0) causes a yeild for ESP8266
+  delayMicroseconds(10);   // Slight delay to ensure converstion started.  Probably not needed, but for safety
   do {
-	  delay(1);
+	  delay(0);            // delay(0) causes a yeild for ESP8266
 	 } 
 	 while (ADS1X15_REG_CONFIG_OS_BUSY == (readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG) & ADS1X15_REG_CONFIG_OS_MASK));
             // Stop when the config register OS bit changes to 1
