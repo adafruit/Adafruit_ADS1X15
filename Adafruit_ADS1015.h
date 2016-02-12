@@ -219,9 +219,9 @@ protected:
   float     readADC_Differential_0_3_V(void);
   float     readADC_Differential_1_3_V(void);
   float     readADC_Differential_2_3_V(void);
+  void      waitForConversion();
 
  private:
-   void      waitForConversion();
 
 };
 
