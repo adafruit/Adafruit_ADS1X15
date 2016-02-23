@@ -18,6 +18,9 @@
 */
 /**************************************************************************/
 
+#ifndef _ADAFRUIT_ADS1015_H_
+#define _ADAFRUIT_ADS1015_H_
+
 #if ARDUINO >= 100
  #include "Arduino.h"
 #else
@@ -141,3 +144,5 @@ protected:
 
 typedef Adafruit_ADS1x15<ADS1015_CONVERSIONDELAY, 4> Adafruit_ADS1015;
 typedef Adafruit_ADS1x15<ADS1115_CONVERSIONDELAY, 0> Adafruit_ADS1115;
+
+#endif
