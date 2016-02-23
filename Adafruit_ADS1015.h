@@ -117,17 +117,16 @@ typedef enum
   GAIN_SIXTEEN      = ADS1015_REG_CONFIG_PGA_0_256V
 } adsGain_t;
 
-class Adafruit_ADS1015
+template<uint8_t conversionDelay, uint8_t bitShift>
+class Adafruit_ADS1x15
 {
 protected:
    // Instance-specific properties
    uint8_t   m_i2cAddress;
-   uint8_t   m_conversionDelay;
-   uint8_t   m_bitShift;
    adsGain_t m_gain;
 
  public:
-  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS);
+  Adafruit_ADS1x15(uint8_t i2cAddress = ADS1015_ADDRESS);
   void begin(void);
   uint16_t  readADC_SingleEnded(uint8_t channel);
   int16_t   readADC_Differential_0_1(void);
@@ -140,11 +139,5 @@ protected:
  private:
 };
 
-// Derive from ADS1105 & override construction to set properties
-class Adafruit_ADS1115 : public Adafruit_ADS1015
-{
- public:
-  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
-
- private:
-};
+typedef Adafruit_ADS1x15<ADS1015_CONVERSIONDELAY, 4> Adafruit_ADS1015;
+typedef Adafruit_ADS1x15<ADS1115_CONVERSIONDELAY, 0> Adafruit_ADS1115;
