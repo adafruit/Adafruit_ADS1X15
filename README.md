@@ -6,18 +6,20 @@ Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Co
 
 ## Compatibility
 
-MCU               | Tested Works | Doesn't Work | Not Tested  | Notes
------------------ | :----------: | :----------: | :---------: | -----
-Atmega328 @ 16MHz |      X       |             |            | 
-Atmega328 @ 12MHz |      X       |             |            | 
+MCU                | Tested Works | Doesn't Work | Not Tested  | Notes
+------------------ | :----------: | :----------: | :---------: | -----
+Atmega328 @ 16MHz  |      X       |             |            | 
+Atmega328 @ 12MHz  |      X       |             |            | 
 Atmega32u4 @ 16MHz |      X       |             |            | Use SDA/SCL on pins D2 &amp; D3
-Atmega32u4 @ 8MHz |      X       |             |            | Use SDA/SCL on pins D2 &amp; D3
-ESP8266           |      X       |             |            | SDA/SCL default to pins 4 &amp; 5 but any two pins can be assigned as SDA/SCL using Wire.begin(SDA,SCL)
+Atmega32u4 @ 8MHz  |      X       |             |            | Use SDA/SCL on pins D2 &amp; D3
+ESP8266            |      X       |             |            | SDA/SCL default to pins 4 &amp; 5 but any two pins can be assigned as SDA/SCL using Wire.begin(SDA,SCL)
 Atmega2560 @ 16MHz |      X       |             |            | Use SDA/SCL on pins 20 &amp; 21
-ATSAM3X8E         |      X       |             |            | Use SDA/SCL on pins 20 &amp; 21
-ATSAM21D          |      X       |             |            | 
-ATtiny85 @ 16MHz  |      X       |             |            | Use 0 for SDA, 2 for SCL
-ATtiny85 @ 8MHz   |      X       |             |            | Use 0 for SDA, 2 for SCL
+ATSAM3X8E          |      X       |             |            | Use SDA/SCL on pins 20 &amp; 21
+ATSAM21D           |      X       |             |            | 
+ATtiny85 @ 16MHz   |      X       |             |            | Use 0 for SDA, 2 for SCL
+ATtiny85 @ 8MHz    |      X       |             |            | Use 0 for SDA, 2 for SCL
+Intel Curie @ 32MHz |             |             |     X       | 
+STM32F2            |             |             |     X       | 
 
   * ATmega328 @ 16MHz : Arduino UNO, Adafruit Pro Trinket 5V, Adafruit Metro 328, Adafruit Metro Mini
   * ATmega328 @ 12MHz : Adafruit Pro Trinket 3V
