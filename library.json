@@ -18,6 +18,5 @@
     }
   ],
   "frameworks": "arduino",
-  "platforms": "*",
-  "version": "1.0.0"
+  "platforms": "*"
 }
