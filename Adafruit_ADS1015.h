@@ -133,6 +133,7 @@ protected:
   int16_t   readADC_Differential_0_1(void);
   int16_t   readADC_Differential_2_3(void);
   void      startComparator_SingleEnded(uint8_t channel, int16_t threshold);
+  void      startComparator_SingleEnded(uint8_t channel, int16_t lo_threshold, int16_t hi_threshold);
   int16_t   getLastConversionResults();
   void      setGain(adsGain_t gain);
   adsGain_t getGain(void);
