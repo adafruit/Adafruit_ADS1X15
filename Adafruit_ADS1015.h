@@ -37,9 +37,10 @@
 /*=========================================================================*/
 
 /*=========================================================================
-    Default low threshold for comparator
+    Default thresholds for comparator
     -----------------------------------------------------------------------*/
     #define ADS1X15_LOW_THRESHOLD_DEFAULT   (0x8000)
+    #define ADS1X15_HIGH_THRESHOLD_DEFAULT  (0x7FFF)
 /*=========================================================================*/
 
 /*=========================================================================
@@ -145,7 +146,7 @@
 
 /*=========================================================================*/
 
-typedef enum 
+typedef enum : uint16_t
 {
   DIFF_MUX_0_1      = ADS1X15_REG_CONFIG_MUX_DIFF_0_1,
   DIFF_MUX_0_3      = ADS1X15_REG_CONFIG_MUX_DIFF_0_3,
@@ -153,7 +154,7 @@ typedef enum
   DIFF_MUX_2_3      = ADS1X15_REG_CONFIG_MUX_DIFF_2_3
 } adsDiffMux_t;
 
-typedef enum
+typedef enum : uint16_t
 {
   GAIN_TWOTHIRDS    = ADS1X15_REG_CONFIG_PGA_6_144V,
   GAIN_ONE          = ADS1X15_REG_CONFIG_PGA_4_096V,
@@ -164,7 +165,7 @@ typedef enum
   GAIN_DEFAULT      = ADS1X15_REG_CONFIG_PGA_6_144V
 } adsGain_t;
 
-typedef enum
+typedef enum : uint16_t
 {
     ADS1015_DR_128SPS          = ADS1015_REG_CONFIG_DR_128SPS,
     ADS1015_DR_250SPS          = ADS1015_REG_CONFIG_DR_250SPS,
@@ -207,7 +208,9 @@ protected:
   int16_t   readADC_Differential_0_3(void);
   int16_t   readADC_Differential_1_3(void);
   int16_t   readADC_Differential_2_3(void);
-  void      startComparator_SingleEnded(uint8_t channel, int16_t threshold);
+  void      startComparator_SingleEnded(uint8_t channel, int16_t highThreshold);
+  void      startWindowComparator_SingleEnded(uint8_t channel, int16_t lowThreshold, int16_t highThreshold);
+  void      startContinuous_SingleEnded(uint8_t channel);
   int16_t   getLastConversionResults(void);
   void      setGain(adsGain_t gain);
   adsGain_t getGain(void);

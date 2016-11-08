@@ -398,11 +398,12 @@ float Adafruit_ADS1015::readADC_Differential_2_3_V() {
     @brief  Sets up the comparator to operate in basic mode, causing the
             ALERT/RDY pin to assert (go from high to low) when the ADC
             value exceeds the specified threshold.
+			The pin latches, call getLastConversionResults() to clear the latch.
 
             This will also set the ADC in continuous conversion mode.
 */
 /**************************************************************************/
-void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
+void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t highThreshold)
 {
   // Start with default values
   uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
@@ -422,10 +423,86 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
 
   // Set the high threshold register
   // Shift 12-bit results left 4 bits for the ADS1015
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH, threshold << m_bitShift);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH, highThreshold << m_bitShift);
   
   // Set the high threshold register to the default
   writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_LOWTHRESH, ADS1X15_LOW_THRESHOLD_DEFAULT);
+
+  // Write config register to the ADC
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Sets up the comparator to operate in window mode, causing the
+            ALERT/RDY pin to assert (go from high to low) when the ADC
+            value exceeds the high threshold or drops below the low threshold.
+			The pin latches, call getLastConversionResults() to clear the latch.
+
+            This will also set the ADC in continuous conversion mode.
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startWindowComparator_SingleEnded(uint8_t channel, int16_t lowThreshold, int16_t highThreshold)
+{
+  // Start with default values
+  uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
+                    ADS1X15_REG_CONFIG_CLAT_LATCH   | // Latching mode
+                    ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1X15_REG_CONFIG_CMODE_WINDOW | // Window comparator 
+                    ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+
+  // Set PGA/voltage range
+  config |= m_gain;
+  
+  // Set Samples per Second
+  config |= m_SPS;
+                    
+  // Set single-ended input channel
+  config |= getSingleEndedConfigBitsForMUX(channel);
+
+  // Set the high threshold register
+  // Shift 12-bit results left 4 bits for the ADS1015
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH, highThreshold << m_bitShift);
+  
+  // Set the high threshold register to the default
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_LOWTHRESH, lowThreshold << m_bitShift);
+
+  // Write config register to the ADC
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Sets up continous coversion operatoin, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_SingleEnded(uint8_t channel)
+{
+  // Start with default values
+  uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
+                    ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+
+  // Set PGA/voltage range
+  config |= m_gain;
+  
+  // Set Samples per Second
+  config |= m_SPS;
+                    
+  // Set single-ended input channel
+  config |= getSingleEndedConfigBitsForMUX(channel);
+
+  // Continuous mode is set by setting the most signigicant bit for the HIGH threshold to 1
+  // and for the LOW threshold to 0.  This is accomlished by setting the HIGH threshold to the 
+  // low default (a negative number) and the LOW threshold to the HIGH default (a positive number)
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH, ADS1X15_LOW_THRESHOLD_DEFAULT);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_LOWTHRESH, ADS1X15_HIGH_THRESHOLD_DEFAULT);
 
   // Write config register to the ADC
   writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
