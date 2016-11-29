@@ -516,6 +516,93 @@ void Adafruit_ADS1015::startContinuous_SingleEnded(uint8_t channel)
 
 /**************************************************************************/
 /*!
+    @brief  Sets up Differential continous coversion operatoin, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_Differential(adsDiffMux_t regConfigDiffMUX)
+{
+  // Initial single ended non-contunuous read primes the conversion buffer with a valid reading
+  // so that the initial interrupts produced a correct result instead of a left over 
+  // conversion result from previous operations.
+  int16_t primingRead = readADC_Differential(regConfigDiffMUX); 
+  
+  // Start with default values
+  uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
+                    ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                    ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+
+  // Set PGA/voltage range
+  config |= m_gain;
+  
+  // Set Samples per Second
+  config |= m_SPS;
+                    
+  // Set channels
+  config |= regConfigDiffMUX;          // set P and N inputs for differential
+
+  // Continuous mode is set by setting the most signigicant bit for the HIGH threshold to 1
+  // and for the LOW threshold to 0.  This is accomlished by setting the HIGH threshold to the 
+  // low default (a negative number) and the LOW threshold to the HIGH default (a positive number)
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH, ADS1X15_LOW_THRESHOLD_DEFAULT);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_LOWTHRESH, ADS1X15_HIGH_THRESHOLD_DEFAULT);
+
+  // Write config register to the ADC
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Sets up Differential continous coversion operation between the
+            P (AIN1) and N (AIN3) input, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_Differential_0_1() {
+  startContinuous_Differential(DIFF_MUX_0_1);                             // AIN0 = P, AIN1 = N
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Sets up Differential continous coversion operation between the
+            P (AIN1) and N (AIN3) input, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_Differential_0_3() {
+  startContinuous_Differential(DIFF_MUX_0_3);                             // AIN0 = P, AIN1 = N
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Sets up Differential continous coversion operation between the
+            P (AIN1) and N (AIN3) input, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_Differential_1_3() {
+  startContinuous_Differential(DIFF_MUX_1_3);                             // AIN0 = P, AIN1 = N
+}
+
+/**************************************************************************/
+/*! 
+    @brief  Sets up Differential continous coversion operation between the
+            P (AIN1) and N (AIN3) input, causing the
+            ALERT/RDY pin to assert (go from high to low) each time a conversion
+			completes. Pin stays low for 8 micro seconds (per the datasheet)
+*/
+/**************************************************************************/
+void Adafruit_ADS1015::startContinuous_Differential_2_3() {
+  startContinuous_Differential(DIFF_MUX_2_3);                             // AIN0 = P, AIN1 = N
+}
+
+/**************************************************************************/
+/*!
     @brief  Poll the device each millisecond until the conversion is done.  
 	        Using delay is important for an ESP8266 becasue it yeilds to the
 			allow network operations to run.
