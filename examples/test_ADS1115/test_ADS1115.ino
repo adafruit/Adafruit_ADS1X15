@@ -13,24 +13,24 @@ Below are the components and connections for the test circuit for the test:
 Components:
 
 ADS1115
-D1 1N4004 (Cathode to A0, Anode to Pin 3 for arduino - choose different pin for ESP8266)
-R1 3k3    (VDD to A0)
-R2 240R   (A0 to A1)
-R3 1K     (A1 to A2)
-R4 1K     (A2 to A3)
+D1 1N4004 (Cathode to AIN0, Anode to Pin 3 for arduino - choose different pin for ESP8266)
+R1 3k3    (VDD to AIN0)
+R2 240R   (AIN0 to AIN1)
+R3 1K     (AIN1 to AIN2)
+R4 1K     (AIN2 to AIN3)
 
 Connections:
 
-VDD ---- +5, R1 (VDD to A0)
+VDD ---- +5, R1 (VDD to AIN0)
 GND ---- Gound
 SCL ---- Arduino Uno A5 or ESP8266 Pin 5
 SDA ---- Arduino Uno A4 or ESP8266 Pin 4
 ADDR --- GND
 ALRT --- Digital Pin 2
-A0 ----- R1, D1(Cathode to A0, Anode to Pin 3), R2
-A1 ----- R2, R3
-A2 ----- R3, R4
-A3 ----- R4, GND
+AIN0 ----- R1, D1(Cathode to AIN0, Anode to Pin 3), R2
+AIN1 ----- R2, R3
+AIN2 ----- R3, R4
+AIN3 ----- R4, GND
 
 */
 
@@ -124,6 +124,13 @@ void setup(void)
   Serial.println("Starting continous mode on A0 at 8 SPS");
   ads.setSPS(ADS1115_DR_8SPS);     
   ads.startContinuous_SingleEnded(0); 
+  //ads.startContinuous_SingleEnded(1); 
+  //ads.startContinuous_SingleEnded(2); 
+  //ads.startContinuous_SingleEnded(3); 
+  //ads.startContinuous_Differential_0_1(); 
+  //ads.startContinuous_Differential_0_3(); 
+  //ads.startContinuous_Differential_1_3(); 
+  //ads.startContinuous_Differential_2_3(); 
   
   pinMode(alertPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(alertPin), continuousAlert, FALLING);
@@ -131,7 +138,7 @@ void setup(void)
 
 void continuousAlert() {
 
-// cannot call getLastConversionResults from ISR because it uses I2C library that needs interrupts
+// Do not call getLastConversionResults from ISR because it uses I2C library that needs interrupts
 // to make it work, interrupts would need to be re-enabled in the ISR, which is not a very good practice.
   
   continuousConversionReady = true;
