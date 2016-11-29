@@ -1,4 +1,3 @@
-
 /*
 This sketch tests the library, outputting the values ready to Serial.
 Only one gain setting is tested at a time.  If the gain is changed to
@@ -45,6 +44,8 @@ float   multiplier;
 
 const int alertPin = 2;
 const int raiseVoltagePin = 3;
+
+volatile bool continuousConversionReady = false;
   
 void setup(void)
 {
@@ -116,10 +117,36 @@ void setup(void)
   Serial.println("********* 860 SPS ************");
   ads.setSPS(ADS1115_DR_860SPS);     
   runTest();
+
+//Configure interrupt on alert pin for continuous mode;
+  Serial.println();
+  
+  Serial.println("Starting continous mode on A0 at 8 SPS");
+  ads.setSPS(ADS1115_DR_8SPS);     
+  ads.startContinuous_SingleEnded(0); 
+  
+  pinMode(alertPin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(alertPin), continuousAlert, FALLING);
+}
+
+void continuousAlert() {
+
+// cannot call getLastConversionResults from ISR because it uses I2C library that needs interrupts
+// to make it work, interrupts would need to be re-enabled in the ISR, which is not a very good practice.
+  
+  continuousConversionReady = true;
 }
 
 void loop(void)
 {
+  if (continuousConversionReady) {    
+    float result = ((float) ads.getLastConversionResults()) * ads.voltsPerBit();
+    continuousConversionReady = false;
+    Serial.print ("In interrupt routine. Reading is ");
+    Serial.print (result,7);
+    Serial.print (" at millisecond ");
+    Serial.println(millis());
+  }
 
 }
 
