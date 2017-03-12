@@ -24,7 +24,13 @@
  #include "WProgram.h"
 #endif
 
-#include <Wire.h>
+// I2C library
+// Teensy 3.1, 3.2, LC
+#if defined(__MK20DX256__) || defined(__MKL26Z64__)
+  #include <i2c_t3.h>
+#else //For other Arduino
+  #include <Wire.h>
+#endif
 
 /*=========================================================================
     I2C ADDRESS/BITS
