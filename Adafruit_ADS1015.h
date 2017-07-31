@@ -125,9 +125,10 @@ protected:
    uint8_t   m_conversionDelay;
    uint8_t   m_bitShift;
    adsGain_t m_gain;
+   int8_t    m_alertPin;
 
  public:
-  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS);
+   Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS, int8_t alertPin = -1);
   void begin(void);
   uint16_t  readADC_SingleEnded(uint8_t channel);
   int16_t   readADC_Differential_0_1(void);
@@ -144,7 +145,8 @@ protected:
 class Adafruit_ADS1115 : public Adafruit_ADS1015
 {
  public:
-  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
+	Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS,
+			 int8_t alertPin = -1);
 
  private:
 };

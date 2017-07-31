@@ -85,12 +85,15 @@ static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
     @brief  Instantiates a new ADS1015 class w/appropriate properties
 */
 /**************************************************************************/
-Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) 
+Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress, int8_t alertPin)
 {
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1015_CONVERSIONDELAY;
    m_bitShift = 4;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+
+   m_alertPin = alertPin;
+   pinMode(m_alertPin, INPUT);
 }
 
 /**************************************************************************/
@@ -98,12 +101,15 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress)
     @brief  Instantiates a new ADS1115 class w/appropriate properties
 */
 /**************************************************************************/
-Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
+Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress, int8_t alertPin)
 {
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
    m_bitShift = 0;
    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+
+   m_alertPin = alertPin;
+   pinMode(m_alertPin, INPUT);
 }
 
 /**************************************************************************/
@@ -145,7 +151,7 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   {
     return 0;
   }
-  
+
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
@@ -180,8 +186,14 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   // Write config register to the ADC
   writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 
-  // Wait for the conversion to complete
-  delay(m_conversionDelay);
+  if (-1 == m_alertPin) {
+	  // Wait for the conversion to complete
+	  delay(m_conversionDelay);
+  } else { // wait for a flank in alertPin
+	  unsigned long conversionStart = millis();
+	  while (LOW == digitalRead(m_alertPin) &&
+		 (millis() - conversionStart) < m_conversionDelay);
+  }
 
   // Read the conversion results
   // Shift 12-bit results right 4 bits for the ADS1015
