@@ -18,6 +18,7 @@
     v1.0 - First release
     v1.1  - Added ADS1115 support - W. Earl
     v1.2  - Added window comparitor support - B. Harville
+            https://github.com/PotatoX/Adafruit_ADS1X15
 */
 /**************************************************************************/
 #if ARDUINO >= 100
