@@ -1,7 +1,7 @@
 /**************************************************************************/
 /*!
     @file     Adafruit_ADS1015.cpp
-    @author   K.Townsend (Adafruit Industries), B. Harville
+    @author   K.Townsend (Adafruit Industries)
     @license  BSD (see license.txt)
 
     Driver for the ADS1015/ADS1115 ADC
@@ -16,7 +16,8 @@
     @section  HISTORY
 
     v1.0 - First release
-    v1.1 - Added window comparitor support
+    v1.1  - Added ADS1115 support - W. Earl
+    v1.2  - Added window comparitor support - B. Harville
 */
 /**************************************************************************/
 #if ARDUINO >= 100
