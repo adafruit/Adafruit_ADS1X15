@@ -26,6 +26,9 @@
 
 #include <Wire.h>
 
+#ifndef _ADAFRUIT_ADS1X15_H
+#define _ADAFRUIT_ADS1X15_H
+
 /*=========================================================================
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
@@ -148,3 +151,5 @@ class Adafruit_ADS1115 : public Adafruit_ADS1015
 
  private:
 };
+
+#endif
