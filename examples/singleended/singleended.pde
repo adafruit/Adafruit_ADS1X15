@@ -2,7 +2,7 @@
 #include <Adafruit_ADS1015.h>
 
 // Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
-Adafruit_ADS1015 ads;     /* Use thi for the 12-bit version */
+Adafruit_ADS1015 ads;     /* Use this for the 12-bit version */
 
 void setup(void) 
 {

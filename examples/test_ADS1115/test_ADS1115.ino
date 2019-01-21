@@ -37,8 +37,8 @@ AIN3 ----- R4, GND
 #include <Wire.h>
 #include <Adafruit_ADS1015.h>
 
-  Adafruit_ADS1115 ads;     // Use this for the 16-bit version 
-//Adafruit_ADS1015 ads;     // Use this for the 12-bit version 
+//Adafruit_ADS1115 ads;     // Use this for the 16-bit version 
+Adafruit_ADS1015 ads;     // Use this for the 12-bit version 
 
 float   multiplier;
 
@@ -53,7 +53,7 @@ void setup(void)
   pinMode(raiseVoltagePin,OUTPUT);
   digitalWrite(raiseVoltagePin,LOW);
   
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Hello!");
   
   // The ADC input range (or gain) can be changed via the following

@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include <Adafruit_ADS1015.h>
 
-  Adafruit_ADS1115 ads;     // Use this for the 16-bit version 
-//Adafruit_ADS1015 ads;     // Use this for the 12-bit version 
+//Adafruit_ADS1115 ads;     // Use this for the 16-bit version 
+Adafruit_ADS1015 ads;     // Use this for the 12-bit version 
 
 const int alertPin = 2;
 
@@ -12,7 +12,7 @@ void setup(void)
 {
   pinMode(alertPin,INPUT);
 
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Hello!");
   
   // The ADC input range (or gain) can be changed via the following
@@ -43,7 +43,6 @@ void setup(void)
   //ads.startContinuous_Differential_1_3(); 
   //ads.startContinuous_Differential_2_3(); 
   
-  pinMode(alertPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(alertPin), continuousAlert, FALLING);
 }
 
