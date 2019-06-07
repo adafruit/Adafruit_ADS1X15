@@ -4,6 +4,17 @@
 // Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
 Adafruit_ADS1015 ads;     /* Use thi for the 12-bit version */
 
+/**
+* on ESP32 ADS1115 working on 3.3v
+* change conversion delay from 8 to 10 avoid same read on each ADC pins
+*/
+/* uncoment this block to work on EPS32
+#ifdef ADS1115_CONVERSIONDELAY         
+#undef ADS1115_CONVERSIONDELAY
+#define ADS1115_CONVERSIONDELAY 10
+#endif
+*/
+
 void setup(void) 
 {
   Serial.begin(9600);
