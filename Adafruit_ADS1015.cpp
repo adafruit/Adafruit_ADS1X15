@@ -487,8 +487,8 @@ void Adafruit_ADS1015::startContinuous_SingleEnded(uint8_t channel)
   // Initial single ended non-contunuous read primes the conversion buffer with a valid reading
   // so that the initial interrupts produced a correct result instead of a left over 
   // conversion result from previous operations.
-  int16_t primingRead = readADC_SingleEnded(channel); 
-  
+  readADC_SingleEnded(channel);
+
   // Start with default values
   uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
                     ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
@@ -526,8 +526,8 @@ void Adafruit_ADS1015::startContinuous_Differential(adsDiffMux_t regConfigDiffMU
   // Initial Differential non-contunuous read primes the conversion buffer with a valid reading
   // so that the initial interrupts produced a correct result instead of a left over 
   // conversion result from previous operations.
-  int16_t primingRead = readADC_Differential(regConfigDiffMUX); 
-  
+  readADC_Differential(regConfigDiffMUX);
+
   // Start with default values
   uint16_t config = ADS1X15_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
                     ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
