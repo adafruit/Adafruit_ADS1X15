@@ -17,6 +17,8 @@
     v1.1  - Added ADS1115 support - W. Earl
 */
 /**************************************************************************/
+#ifndef ADAFRUIT_ADS1015_H
+#define ADAFRUIT_ADS1015_H
 
 #if ARDUINO >= 100
  #include "Arduino.h"
@@ -148,3 +150,4 @@ class Adafruit_ADS1115 : public Adafruit_ADS1015
 
  private:
 };
+#endif
