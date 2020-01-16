@@ -31,8 +31,8 @@
 /*=========================================================================
     CONVERSION DELAY (in mS)
     -----------------------------------------------------------------------*/
-#define ADS1015_CONVERSIONDELAY (1)  ///< Conversion delay
-#define ADS1115_CONVERSIONDELAY (8)  ///< Conversion delay
+#define ADS1015_CONVERSIONDELAY (1) ///< Conversion delay
+#define ADS1115_CONVERSIONDELAY (8) ///< Conversion delay
 /*=========================================================================*/
 
 /*=========================================================================
@@ -70,7 +70,7 @@
 #define ADS1015_REG_CONFIG_MUX_SINGLE_2 (0x6000) ///< Single-ended AIN2
 #define ADS1015_REG_CONFIG_MUX_SINGLE_3 (0x7000) ///< Single-ended AIN3
 
-#define ADS1015_REG_CONFIG_PGA_MASK (0x0E00) ///< PGA Mask
+#define ADS1015_REG_CONFIG_PGA_MASK (0x0E00)   ///< PGA Mask
 #define ADS1015_REG_CONFIG_PGA_6_144V (0x0000) ///< +/-6.144V range = Gain 2/3
 #define ADS1015_REG_CONFIG_PGA_4_096V (0x0200) ///< +/-4.096V range = Gain 1
 #define ADS1015_REG_CONFIG_PGA_2_048V                                          \
@@ -79,12 +79,12 @@
 #define ADS1015_REG_CONFIG_PGA_0_512V (0x0800) ///< +/-0.512V range = Gain 8
 #define ADS1015_REG_CONFIG_PGA_0_256V (0x0A00) ///< +/-0.256V range = Gain 16
 
-#define ADS1015_REG_CONFIG_MODE_MASK (0x0100) ///< Mode Mask
+#define ADS1015_REG_CONFIG_MODE_MASK (0x0100)   ///< Mode Mask
 #define ADS1015_REG_CONFIG_MODE_CONTIN (0x0000) ///< Continuous conversion mode
 #define ADS1015_REG_CONFIG_MODE_SINGLE                                         \
   (0x0100) ///< Power-down single-shot mode (default)
 
-#define ADS1015_REG_CONFIG_DR_MASK (0x00E0) ///< Data Rate Mask
+#define ADS1015_REG_CONFIG_DR_MASK (0x00E0)   ///< Data Rate Mask
 #define ADS1015_REG_CONFIG_DR_128SPS (0x0000) ///< 128 samples per second
 #define ADS1015_REG_CONFIG_DR_250SPS (0x0020) ///< 250 samples per second
 #define ADS1015_REG_CONFIG_DR_490SPS (0x0040) ///< 490 samples per second
