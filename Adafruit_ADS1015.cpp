@@ -2,20 +2,24 @@
 /*!
     @file     Adafruit_ADS1015.cpp
     @author   K.Townsend (Adafruit Industries)
-    @license  BSD (see license.txt)
 
-    Driver for the ADS1015/ADS1115 ADC
+    @mainpage Adafruit ADS1X15 ADC Breakout Driver
 
-    This is a library for the Adafruit MPL115A2 breakout
-    ----> https://www.adafruit.com/products/???
+    @section intro_sec Introduction
+
+    This is a library for the Adafruit ADS1X15 ADC breakout boards.
 
     Adafruit invests time and resources providing this open source code,
     please support Adafruit and open-source hardware by purchasing
     products from Adafruit!
 
-    @section  HISTORY
+    @section author Author
 
-    v1.0 - First release
+    Written by Kevin "KTOWN" Townsend for Adafruit Industries.
+
+    @section license License
+
+    BSD license, all text here must be included in any redistribution
 */
 /**************************************************************************/
 #if ARDUINO >= 100
@@ -44,6 +48,8 @@ static uint8_t i2cread(void) {
 /**************************************************************************/
 /*!
     @brief  Abstract away platform differences in Arduino wire library
+
+    @param x byte to write
 */
 /**************************************************************************/
 static void i2cwrite(uint8_t x) {
@@ -57,6 +63,10 @@ static void i2cwrite(uint8_t x) {
 /**************************************************************************/
 /*!
     @brief  Writes 16-bits to the specified destination register
+
+    @param i2cAddress I2C address of device
+    @param reg register address to write to
+    @param value value to write to register
 */
 /**************************************************************************/
 static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
@@ -70,6 +80,9 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
 /**************************************************************************/
 /*!
     @brief  Writes 16-bits to the specified destination register
+
+    @param i2cAddress I2C address of device
+    @param reg register address to read from
 */
 /**************************************************************************/
 static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
@@ -83,6 +96,8 @@ static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
 /**************************************************************************/
 /*!
     @brief  Instantiates a new ADS1015 class w/appropriate properties
+
+    @param i2cAddress I2C address of device
 */
 /**************************************************************************/
 Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) {
@@ -95,6 +110,8 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) {
 /**************************************************************************/
 /*!
     @brief  Instantiates a new ADS1115 class w/appropriate properties
+
+    @param i2cAddress I2C address of device
 */
 /**************************************************************************/
 Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress) {
@@ -114,6 +131,8 @@ void Adafruit_ADS1015::begin() { Wire.begin(); }
 /**************************************************************************/
 /*!
     @brief  Sets the gain and input voltage range
+
+    @param gain gain setting to use
 */
 /**************************************************************************/
 void Adafruit_ADS1015::setGain(adsGain_t gain) { m_gain = gain; }
@@ -128,6 +147,8 @@ adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
 /**************************************************************************/
 /*!
     @brief  Gets a single-ended ADC reading from the specified channel
+
+    @param channel ADC channel to read
 */
 /**************************************************************************/
 uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
@@ -282,6 +303,9 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
             value exceeds the specified threshold.
 
             This will also set the ADC in continuous conversion mode.
+
+    @param channel ADC channel to use
+    @param threshold comparator threshold
 */
 /**************************************************************************/
 void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel,
