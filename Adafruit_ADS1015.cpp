@@ -17,6 +17,11 @@
 
     Written by Kevin "KTOWN" Townsend for Adafruit Industries.
 
+    @section  HISTORY
+
+    v1.0  - First release
+    v1.1  - Added ADS1115 support - W. Earl
+
     @section license License
 
     BSD license, all text here must be included in any redistribution
@@ -35,6 +40,8 @@
 /**************************************************************************/
 /*!
     @brief  Abstract away platform differences in Arduino wire library
+
+    @return the byte read
 */
 /**************************************************************************/
 static uint8_t i2cread(void) {
@@ -79,10 +86,12 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
 
 /**************************************************************************/
 /*!
-    @brief  Writes 16-bits to the specified destination register
+    @brief  Read 16-bits from the specified destination register
 
     @param i2cAddress I2C address of device
     @param reg register address to read from
+
+    @return 16 bit register value read
 */
 /**************************************************************************/
 static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
@@ -140,6 +149,8 @@ void Adafruit_ADS1015::setGain(adsGain_t gain) { m_gain = gain; }
 /**************************************************************************/
 /*!
     @brief  Gets a gain and input voltage range
+
+    @return the gain setting
 */
 /**************************************************************************/
 adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
@@ -149,6 +160,8 @@ adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
     @brief  Gets a single-ended ADC reading from the specified channel
 
     @param channel ADC channel to read
+
+    @return the ADC reading
 */
 /**************************************************************************/
 uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
@@ -204,6 +217,8 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
             difference between the P (AIN0) and N (AIN1) input.  Generates
             a signed value since the difference can be either
             positive or negative.
+
+    @return the ADC reading
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
@@ -253,6 +268,8 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
             difference between the P (AIN2) and N (AIN3) input.  Generates
             a signed value since the difference can be either
             positive or negative.
+
+    @return the ADC reading
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
@@ -354,6 +371,8 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel,
     @brief  In order to clear the comparator, we need to read the
             conversion results.  This function reads the last conversion
             results without changing the config value.
+
+    @return the last ADC reading
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1015::getLastConversionResults() {
