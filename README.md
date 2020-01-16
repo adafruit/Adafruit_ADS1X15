@@ -1,35 +1,22 @@
-Adafruit_ADS1015
-================
+# Adafruit_ADS1015 ![Build Status](https://github.com/adafruit/Adafruit_ADS1X15/workflows/Arduino%20Library%20CI/badge.svg)
 
-Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator
-<!-- START COMPATIBILITY TABLE -->
+Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator
 
-## Compatibility
+## Info
 
-MCU                | Tested Works | Doesn't Work | Not Tested  | Notes
------------------- | :----------: | :----------: | :---------: | -----
-Atmega328 @ 16MHz  |      X       |             |            | 
-Atmega328 @ 12MHz  |      X       |             |            | 
-Atmega32u4 @ 16MHz |      X       |             |            | Use SDA/SCL on pins D2 &amp; D3
-Atmega32u4 @ 8MHz  |      X       |             |            | Use SDA/SCL on pins D2 &amp; D3
-ESP8266            |      X       |             |            | SDA/SCL default to pins 4 &amp; 5 but any two pins can be assigned as SDA/SCL using Wire.begin(SDA,SCL)
-Atmega2560 @ 16MHz |      X       |             |            | Use SDA/SCL on pins 20 &amp; 21
-ATSAM3X8E          |      X       |             |            | Use SDA/SCL on pins 20 &amp; 21
-ATSAM21D           |      X       |             |            | 
-ATtiny85 @ 16MHz   |      X       |             |            | Use 0 for SDA, 2 for SCL
-ATtiny85 @ 8MHz    |      X       |             |            | Use 0 for SDA, 2 for SCL
-Intel Curie @ 32MHz |             |             |     X       | 
-STM32F2            |             |             |     X       | 
+This family of ADCs provide 4 single-ended or 2 differential channels.
+Each has a programmable gain amplifier from 2/3 up to 16x. Available
+in 12 or 16 bit versions:
 
-  * ATmega328 @ 16MHz : Arduino UNO, Adafruit Pro Trinket 5V, Adafruit Metro 328, Adafruit Metro Mini
-  * ATmega328 @ 12MHz : Adafruit Pro Trinket 3V
-  * ATmega32u4 @ 16MHz : Arduino Leonardo, Arduino Micro, Arduino Yun, Teensy 2.0
-  * ATmega32u4 @ 8MHz : Adafruit Flora, Bluefruit Micro
-  * ESP8266 : Adafruit Huzzah
-  * ATmega2560 @ 16MHz : Arduino Mega
-  * ATSAM3X8E : Arduino Due
-  * ATSAM21D : Arduino Zero, M0 Pro
-  * ATtiny85 @ 16MHz : Adafruit Trinket 5V
-  * ATtiny85 @ 8MHz : Adafruit Gemma, Arduino Gemma, Adafruit Trinket 3V
+* [ADS1015 12-bit ADC](https://www.adafruit.com/product/1083)
+* [ADS1115 16-bit ADC](https://www.adafruit.com/product/1085)
 
-<!-- END COMPATIBILITY TABLE -->
+The chip's fairly small so it comes on a breakout board with ferrites to keep the AVDD and AGND quiet. Interfacing is done via I2C. The address can be changed to one of four options (see the datasheet table 5) so you can have up to 4 ADS1x15's connected on a single 2-wire I2C bus for 16 single ended inputs.
+
+Adafruit invests time and resources providing this open source code, please
+support Adafruit and open-source hardware by purchasing products from
+[Adafruit](https://www.adafruit.com)!
+
+## License
+
+ BSD license, all text above must be included in any redistribution.
