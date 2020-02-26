@@ -14,6 +14,9 @@
 */
 /**************************************************************************/
 
+#ifndef __ADS1015_H__
+#define __ADS1015_H__
+
 #if ARDUINO >= 100
 #include "Arduino.h"
 #else
@@ -170,3 +173,5 @@ public:
 
 private:
 };
+
+#endif
