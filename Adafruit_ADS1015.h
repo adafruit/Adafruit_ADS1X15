@@ -233,7 +233,7 @@ protected:
 
 };
 
-// Derive from ADS1105 & override construction to set properties
+// Derive from ADS1015 & override construction to set properties
 class Adafruit_ADS1115 : public Adafruit_ADS1015
 {
  public:
