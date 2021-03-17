@@ -16,6 +16,7 @@
 #ifndef __ADS1X15_H__
 #define __ADS1X15_H__
 
+#include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -147,13 +148,13 @@ typedef enum {
 class Adafruit_ADS1X15 {
 protected:
   // Instance-specific properties
-  uint8_t m_i2cAddress;      ///< the I2C address
-  uint8_t m_conversionDelay; ///< conversion deay
-  uint8_t m_bitShift;        ///< bit shift amount
-  adsGain_t m_gain;          ///< ADC gain
+  Adafruit_I2CDevice *m_i2c_dev; ///< I2C bus device
+  uint8_t m_conversionDelay;     ///< conversion deay
+  uint8_t m_bitShift;            ///< bit shift amount
+  adsGain_t m_gain;              ///< ADC gain
 
 public:
-  void begin(void);
+  void begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
   uint16_t readADC_SingleEnded(uint8_t channel);
   int16_t readADC_Differential_0_1(void);
   int16_t readADC_Differential_2_3(void);
@@ -163,6 +164,9 @@ public:
   adsGain_t getGain(void);
 
 private:
+  void writeRegister(uint8_t reg, uint16_t value);
+  uint16_t readRegister(uint8_t reg);
+  uint8_t buffer[3];
 };
 
 /**************************************************************************/
@@ -172,7 +176,7 @@ private:
 /**************************************************************************/
 class Adafruit_ADS1015 : public Adafruit_ADS1X15 {
 public:
-  Adafruit_ADS1015(uint8_t i2cAddress = ADS1X15_ADDRESS);
+  Adafruit_ADS1015();
 };
 
 /**************************************************************************/
@@ -182,7 +186,7 @@ public:
 /**************************************************************************/
 class Adafruit_ADS1115 : public Adafruit_ADS1X15 {
 public:
-  Adafruit_ADS1115(uint8_t i2cAddress = ADS1X15_ADDRESS);
+  Adafruit_ADS1115();
 };
 
 #endif
