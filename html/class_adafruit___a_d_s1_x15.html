@@ -84,10 +84,9 @@ Inheritance diagram for Adafruit_ADS1X15:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa97fcf47f57732b712eca71a449456aa"><td class="memItemLeft" align="right" valign="top"><a id="aa97fcf47f57732b712eca71a449456aa"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#aa97fcf47f57732b712eca71a449456aa">begin</a> (void)</td></tr>
-<tr class="memdesc:aa97fcf47f57732b712eca71a449456aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the HW (reads coefficients values, etc.) <br /></td></tr>
-<tr class="separator:aa97fcf47f57732b712eca71a449456aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06cb1e862f92c948fde7f928a11daa85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a06cb1e862f92c948fde7f928a11daa85">begin</a> (uint8_t i2c_addr=<a class="el" href="_adafruit___a_d_s1_x15_8h.html#a4b48198fb386fe0ea0326bc448caccd4">ADS1X15_ADDRESS</a>, TwoWire *wire=&amp;Wire)</td></tr>
+<tr class="memdesc:a06cb1e862f92c948fde7f928a11daa85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the HW (reads coefficients values, etc.)  <a href="#a06cb1e862f92c948fde7f928a11daa85">More...</a><br /></td></tr>
+<tr class="separator:a06cb1e862f92c948fde7f928a11daa85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4faf7b2d80f75fc40a70016911f9a44a"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a4faf7b2d80f75fc40a70016911f9a44a">readADC_SingleEnded</a> (uint8_t channel)</td></tr>
 <tr class="memdesc:a4faf7b2d80f75fc40a70016911f9a44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a single-ended ADC reading from the specified channel.  <a href="#a4faf7b2d80f75fc40a70016911f9a44a">More...</a><br /></td></tr>
 <tr class="separator:a4faf7b2d80f75fc40a70016911f9a44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,10 +111,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a9bab2eeaf3efad4c018e2c14a04d6159"><td class="memItemLeft" align="right" valign="top"><a id="a9bab2eeaf3efad4c018e2c14a04d6159"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a9bab2eeaf3efad4c018e2c14a04d6159">m_i2cAddress</a></td></tr>
-<tr class="memdesc:a9bab2eeaf3efad4c018e2c14a04d6159"><td class="mdescLeft">&#160;</td><td class="mdescRight">the I2C address <br /></td></tr>
-<tr class="separator:a9bab2eeaf3efad4c018e2c14a04d6159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50148b44c223054e6c12f65a0c60ffd9"><td class="memItemLeft" align="right" valign="top"><a id="a50148b44c223054e6c12f65a0c60ffd9"></a>
+Adafruit_I2CDevice *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a50148b44c223054e6c12f65a0c60ffd9">m_i2c_dev</a></td></tr>
+<tr class="memdesc:a50148b44c223054e6c12f65a0c60ffd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">I2C bus device. <br /></td></tr>
+<tr class="separator:a50148b44c223054e6c12f65a0c60ffd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae94f61a1b4c7daa48737835f22c1337e"><td class="memItemLeft" align="right" valign="top"><a id="ae94f61a1b4c7daa48737835f22c1337e"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#ae94f61a1b4c7daa48737835f22c1337e">m_conversionDelay</a></td></tr>
 <tr class="memdesc:ae94f61a1b4c7daa48737835f22c1337e"><td class="mdescLeft">&#160;</td><td class="mdescRight">conversion deay <br /></td></tr>
@@ -132,6 +131,43 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Sensor driver for the Adafruit ADS1X15 ADC breakouts. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a06cb1e862f92c948fde7f928a11daa85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06cb1e862f92c948fde7f928a11daa85">&#9670;&nbsp;</a></span>begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_ADS1X15::begin </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>i2c_addr</em> = <code><a class="el" href="_adafruit___a_d_s1_x15_8h.html#a4b48198fb386fe0ea0326bc448caccd4">ADS1X15_ADDRESS</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TwoWire *&#160;</td>
+          <td class="paramname"><em>wire</em> = <code>&amp;Wire</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets up the HW (reads coefficients values, etc.) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i2c_addr</td><td>I2C address of device </td></tr>
+    <tr><td class="paramname">wire</td><td>I2C bus </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4faf7b2d80f75fc40a70016911f9a44a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4faf7b2d80f75fc40a70016911f9a44a">&#9670;&nbsp;</a></span>readADC_SingleEnded()</h2>
 
