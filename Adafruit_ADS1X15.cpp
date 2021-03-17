@@ -56,7 +56,7 @@ Adafruit_ADS1115::Adafruit_ADS1115() {
 /*!
     @brief  Sets up the HW (reads coefficients values, etc.)
 
-    @param i2cAddress I2C address of device
+    @param i2c_addr I2C address of device
     @param wire I2C bus
 */
 /**************************************************************************/
