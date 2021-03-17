@@ -16,9 +16,9 @@
 #ifndef __ADS1X15_H__
 #define __ADS1X15_H__
 
+#include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_I2CDevice.h>
 
 /*=========================================================================
     I2C ADDRESS/BITS
@@ -148,11 +148,10 @@ typedef enum {
 class Adafruit_ADS1X15 {
 protected:
   // Instance-specific properties
-  //uint8_t m_i2cAddress;      ///< the I2C address
   Adafruit_I2CDevice *m_i2c_dev; ///< I2C bus device
-  uint8_t m_conversionDelay; ///< conversion deay
-  uint8_t m_bitShift;        ///< bit shift amount
-  adsGain_t m_gain;          ///< ADC gain
+  uint8_t m_conversionDelay;     ///< conversion deay
+  uint8_t m_bitShift;            ///< bit shift amount
+  adsGain_t m_gain;              ///< ADC gain
 
 public:
   void begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
