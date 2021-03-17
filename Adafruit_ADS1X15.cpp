@@ -1,6 +1,6 @@
 /**************************************************************************/
 /*!
-    @file     Adafruit_ADS1015.cpp
+    @file     Adafruit_ADS1X15.cpp
     @author   K.Townsend (Adafruit Industries)
 
     @mainpage Adafruit ADS1X15 ADC Breakout Driver
@@ -21,21 +21,14 @@
 
     v1.0  - First release
     v1.1  - Added ADS1115 support - W. Earl
+    v2.0  - Refactor - C. Nelson
 
     @section license License
 
     BSD license, all text here must be included in any redistribution
 */
 /**************************************************************************/
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include <Wire.h>
-
-#include "Adafruit_ADS1015.h"
+#include "Adafruit_ADS1X15.h"
 
 /**************************************************************************/
 /*!
@@ -135,7 +128,7 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress) {
     @brief  Sets up the HW (reads coefficients values, etc.)
 */
 /**************************************************************************/
-void Adafruit_ADS1015::begin() { Wire.begin(); }
+void Adafruit_ADS1X15::begin() { Wire.begin(); }
 
 /**************************************************************************/
 /*!
@@ -144,7 +137,7 @@ void Adafruit_ADS1015::begin() { Wire.begin(); }
     @param gain gain setting to use
 */
 /**************************************************************************/
-void Adafruit_ADS1015::setGain(adsGain_t gain) { m_gain = gain; }
+void Adafruit_ADS1X15::setGain(adsGain_t gain) { m_gain = gain; }
 
 /**************************************************************************/
 /*!
@@ -153,7 +146,7 @@ void Adafruit_ADS1015::setGain(adsGain_t gain) { m_gain = gain; }
     @return the gain setting
 */
 /**************************************************************************/
-adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
+adsGain_t Adafruit_ADS1X15::getGain() { return m_gain; }
 
 /**************************************************************************/
 /*!
@@ -164,19 +157,19 @@ adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
     @return the ADC reading
 */
 /**************************************************************************/
-uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
+uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
   if (channel > 3) {
     return 0;
   }
 
   // Start with default values
   uint16_t config =
-      ADS1015_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1015_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1015_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
       ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
-      ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
@@ -184,31 +177,31 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   // Set single-ended input channel
   switch (channel) {
   case (0):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_0;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_0;
     break;
   case (1):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_1;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_1;
     break;
   case (2):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_2;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_2;
     break;
   case (3):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_3;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_3;
     break;
   }
 
   // Set 'start single-conversion' bit
-  config |= ADS1015_REG_CONFIG_OS_SINGLE;
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   // Shift 12-bit results right 4 bits for the ADS1015
-  return readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+  return readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
 }
 
 /**************************************************************************/
@@ -221,34 +214,34 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
     @return the ADC reading
 */
 /**************************************************************************/
-int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
+int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
   // Start with default values
   uint16_t config =
-      ADS1015_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1015_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1015_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
       ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
-      ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
 
   // Set channels
-  config |= ADS1015_REG_CONFIG_MUX_DIFF_0_1; // AIN0 = P, AIN1 = N
+  config |= ADS1X15_REG_CONFIG_MUX_DIFF_0_1; // AIN0 = P, AIN1 = N
 
   // Set 'start single-conversion' bit
-  config |= ADS1015_REG_CONFIG_OS_SINGLE;
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
@@ -272,34 +265,34 @@ int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
     @return the ADC reading
 */
 /**************************************************************************/
-int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
+int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
   // Start with default values
   uint16_t config =
-      ADS1015_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1015_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1015_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
       ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
-      ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
 
   // Set channels
-  config |= ADS1015_REG_CONFIG_MUX_DIFF_2_3; // AIN2 = P, AIN3 = N
+  config |= ADS1X15_REG_CONFIG_MUX_DIFF_2_3; // AIN2 = P, AIN3 = N
 
   // Set 'start single-conversion' bit
-  config |= ADS1015_REG_CONFIG_OS_SINGLE;
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
@@ -325,18 +318,18 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
     @param threshold comparator threshold
 */
 /**************************************************************************/
-void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel,
+void Adafruit_ADS1X15::startComparator_SingleEnded(uint8_t channel,
                                                    int16_t threshold) {
   // Start with default values
   uint16_t config =
-      ADS1015_REG_CONFIG_CQUE_1CONV |   // Comparator enabled and asserts on 1
+      ADS1X15_REG_CONFIG_CQUE_1CONV |   // Comparator enabled and asserts on 1
                                         // match
-      ADS1015_REG_CONFIG_CLAT_LATCH |   // Latching mode
-      ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1015_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_LATCH |   // Latching mode
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
       ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
-      ADS1015_REG_CONFIG_MODE_CONTIN |  // Continuous conversion mode
-      ADS1015_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+      ADS1X15_REG_CONFIG_MODE_CONTIN |  // Continuous conversion mode
+      ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
 
   // Set PGA/voltage range
   config |= m_gain;
@@ -344,26 +337,26 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel,
   // Set single-ended input channel
   switch (channel) {
   case (0):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_0;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_0;
     break;
   case (1):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_1;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_1;
     break;
   case (2):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_2;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_2;
     break;
   case (3):
-    config |= ADS1015_REG_CONFIG_MUX_SINGLE_3;
+    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_3;
     break;
   }
 
   // Set the high threshold register
   // Shift 12-bit results left 4 bits for the ADS1015
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_HITHRESH,
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH,
                 threshold << m_bitShift);
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
+  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
 }
 
 /**************************************************************************/
@@ -375,13 +368,13 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel,
     @return the last ADC reading
 */
 /**************************************************************************/
-int16_t Adafruit_ADS1015::getLastConversionResults() {
+int16_t Adafruit_ADS1X15::getLastConversionResults() {
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
