@@ -91,11 +91,12 @@
 #define ADS1015_REG_CONFIG_DR_2400SPS (0x00A0) ///< 2400 samples per second
 #define ADS1015_REG_CONFIG_DR_3300SPS (0x00C0) ///< 3300 samples per second
 
-#define ADS1115_REG_CONFIG_DR_8SPS (0x0000) ///< 8 samples per second
+#define ADS1115_REG_CONFIG_DR_8SPS (0x0000)  ///< 8 samples per second
 #define ADS1115_REG_CONFIG_DR_16SPS (0x0020) ///< 16 samples per second
 #define ADS1115_REG_CONFIG_DR_32SPS (0x0040) ///< 32 samples per second
 #define ADS1115_REG_CONFIG_DR_64SPS (0x0060) ///< 64 samples per second
-#define ADS1115_REG_CONFIG_DR_128SPS (0x0080) ///< 128 samples per second (default)
+#define ADS1115_REG_CONFIG_DR_128SPS                                           \
+  (0x0080) ///< 128 samples per second (default)
 #define ADS1115_REG_CONFIG_DR_250SPS (0x00A0) ///< 250 samples per second
 #define ADS1115_REG_CONFIG_DR_475SPS (0x00C0) ///< 475 samples per second
 #define ADS1115_REG_CONFIG_DR_860SPS (0x00C0) ///< 860 samples per second
