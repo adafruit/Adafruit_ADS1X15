@@ -30,80 +30,43 @@
 /**************************************************************************/
 #include "Adafruit_ADS1X15.h"
 
-/**************************************************************************/
-/*!
-    @brief  Abstract away platform differences in Arduino wire library
+// /**************************************************************************/
+// /*!
+//     @brief  Abstract away platform differences in Arduino wire library
 
-    @return the byte read
-*/
-/**************************************************************************/
-static uint8_t i2cread(void) {
-#if ARDUINO >= 100
-  return Wire.read();
-#else
-  return Wire.receive();
-#endif
-}
+//     @return the byte read
+// */
+// /**************************************************************************/
+// static uint8_t i2cread(void) {
+// #if ARDUINO >= 100
+//   return Wire.read();
+// #else
+//   return Wire.receive();
+// #endif
+// }
 
-/**************************************************************************/
-/*!
-    @brief  Abstract away platform differences in Arduino wire library
+// /**************************************************************************/
+// /*!
+//     @brief  Abstract away platform differences in Arduino wire library
 
-    @param x byte to write
-*/
-/**************************************************************************/
-static void i2cwrite(uint8_t x) {
-#if ARDUINO >= 100
-  Wire.write((uint8_t)x);
-#else
-  Wire.send(x);
-#endif
-}
-
-/**************************************************************************/
-/*!
-    @brief  Writes 16-bits to the specified destination register
-
-    @param i2cAddress I2C address of device
-    @param reg register address to write to
-    @param value value to write to register
-*/
-/**************************************************************************/
-static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
-  Wire.beginTransmission(i2cAddress);
-  i2cwrite((uint8_t)reg);
-  i2cwrite((uint8_t)(value >> 8));
-  i2cwrite((uint8_t)(value & 0xFF));
-  Wire.endTransmission();
-}
-
-/**************************************************************************/
-/*!
-    @brief  Read 16-bits from the specified destination register
-
-    @param i2cAddress I2C address of device
-    @param reg register address to read from
-
-    @return 16 bit register value read
-*/
-/**************************************************************************/
-static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
-  Wire.beginTransmission(i2cAddress);
-  i2cwrite(reg);
-  Wire.endTransmission();
-  Wire.requestFrom(i2cAddress, (uint8_t)2);
-  return ((i2cread() << 8) | i2cread());
-}
+//     @param x byte to write
+// */
+// /**************************************************************************/
+// static void i2cwrite(uint8_t x) {
+// #if ARDUINO >= 100
+//   Wire.write((uint8_t)x);
+// #else
+//   Wire.send(x);
+// #endif
+// }
 
 /**************************************************************************/
 /*!
     @brief  Instantiates a new ADS1015 class w/appropriate properties
-
-    @param i2cAddress I2C address of device
 */
 /**************************************************************************/
-Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) {
-  m_i2cAddress = i2cAddress;
+Adafruit_ADS1015::Adafruit_ADS1015() {
+  //m_i2cAddress = i2cAddress;
   m_conversionDelay = ADS1015_CONVERSIONDELAY;
   m_bitShift = 4;
   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
@@ -112,12 +75,10 @@ Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) {
 /**************************************************************************/
 /*!
     @brief  Instantiates a new ADS1115 class w/appropriate properties
-
-    @param i2cAddress I2C address of device
 */
 /**************************************************************************/
-Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress) {
-  m_i2cAddress = i2cAddress;
+Adafruit_ADS1115::Adafruit_ADS1115() {
+  //m_i2cAddress = i2cAddress;
   m_conversionDelay = ADS1115_CONVERSIONDELAY;
   m_bitShift = 0;
   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
@@ -126,9 +87,15 @@ Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress) {
 /**************************************************************************/
 /*!
     @brief  Sets up the HW (reads coefficients values, etc.)
+
+    @param i2cAddress I2C address of device
+    @param wire I2C bus
 */
 /**************************************************************************/
-void Adafruit_ADS1X15::begin() { Wire.begin(); }
+void Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire) {
+  m_i2c_dev = new Adafruit_I2CDevice(i2c_addr, wire);
+  m_i2c_dev->begin();
+}
 
 /**************************************************************************/
 /*!
@@ -194,14 +161,14 @@ uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
   config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   // Shift 12-bit results right 4 bits for the ADS1015
-  return readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
+  return readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
 }
 
 /**************************************************************************/
@@ -234,14 +201,14 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
   config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
@@ -285,14 +252,14 @@ int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
   config |= ADS1X15_REG_CONFIG_OS_SINGLE;
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
   delay(m_conversionDelay);
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
@@ -352,11 +319,11 @@ void Adafruit_ADS1X15::startComparator_SingleEnded(uint8_t channel,
 
   // Set the high threshold register
   // Shift 12-bit results left 4 bits for the ADS1015
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_HITHRESH,
+  writeRegister(ADS1X15_REG_POINTER_HITHRESH,
                 threshold << m_bitShift);
 
   // Write config register to the ADC
-  writeRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONFIG, config);
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 }
 
 /**************************************************************************/
@@ -374,7 +341,7 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
 
   // Read the conversion results
   uint16_t res =
-      readRegister(m_i2cAddress, ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
+      readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
     return (int16_t)res;
   } else {
@@ -386,4 +353,45 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
     }
     return (int16_t)res;
   }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Writes 16-bits to the specified destination register
+
+    @param reg register address to write to
+    @param value value to write to register
+*/
+/**************************************************************************/
+void Adafruit_ADS1X15::writeRegister(uint8_t reg, uint16_t value) {
+//   Wire.beginTransmission(i2cAddress);
+//   i2cwrite((uint8_t)reg);
+//   i2cwrite((uint8_t)(value >> 8));
+//   i2cwrite((uint8_t)(value & 0xFF));
+//   Wire.endTransmission();
+  buffer[0] = reg;
+  buffer[1] = value >> 8;
+  buffer[2] = value & 0xFF;
+  m_i2c_dev->write(buffer, 3);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Read 16-bits from the specified destination register
+
+    @param reg register address to read from
+
+    @return 16 bit register value read
+*/
+/**************************************************************************/
+uint16_t Adafruit_ADS1X15::readRegister(uint8_t reg) {
+//   Wire.beginTransmission(i2cAddress);
+//   i2cwrite(reg);
+//   Wire.endTransmission();
+//   Wire.requestFrom(i2cAddress, (uint8_t)2);
+//   return ((i2cread() << 8) | i2cread());
+  buffer[0] = reg;
+  m_i2c_dev->write(buffer, 1);
+  m_i2c_dev->read(buffer, 2);
+  return ((buffer[0] << 8) | buffer[1]);
 }
