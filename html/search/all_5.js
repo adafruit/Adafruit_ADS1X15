@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['setgain',['setGain',['../class_adafruit___a_d_s1015.html#a399441eace686975ff22937cbe45cc50',1,'Adafruit_ADS1015']]],
-  ['startcomparator_5fsingleended',['startComparator_SingleEnded',['../class_adafruit___a_d_s1015.html#aecd30775d943ea9d9cff0e3485926596',1,'Adafruit_ADS1015']]]
+  ['setgain',['setGain',['../class_adafruit___a_d_s1_x15.html#acb8ad4ab1fb35d482200c5472c20bca9',1,'Adafruit_ADS1X15']]],
+  ['startcomparator_5fsingleended',['startComparator_SingleEnded',['../class_adafruit___a_d_s1_x15.html#acbf5ddcd0ce886b5444150f1987089d9',1,'Adafruit_ADS1X15']]]
 ];
