@@ -27,13 +27,6 @@
 /*=========================================================================*/
 
 /*=========================================================================
-    CONVERSION DELAY (in mS)
-    -----------------------------------------------------------------------*/
-#define ADS1015_CONVERSIONDELAY (1) ///< Conversion delay
-#define ADS1115_CONVERSIONDELAY (9) ///< Conversion delay
-/*=========================================================================*/
-
-/*=========================================================================
     POINTER REGISTER
     -----------------------------------------------------------------------*/
 #define ADS1X15_REG_POINTER_MASK (0x03)      ///< Point mask
@@ -82,25 +75,7 @@
 #define ADS1X15_REG_CONFIG_MODE_SINGLE                                         \
   (0x0100) ///< Power-down single-shot mode (default)
 
-#define ADS1X15_REG_CONFIG_DR_MASK (0x00E0)   ///< Data Rate Mask
-#define ADS1015_REG_CONFIG_DR_128SPS (0x0000) ///< 128 samples per second
-#define ADS1015_REG_CONFIG_DR_250SPS (0x0020) ///< 250 samples per second
-#define ADS1015_REG_CONFIG_DR_490SPS (0x0040) ///< 490 samples per second
-#define ADS1015_REG_CONFIG_DR_920SPS (0x0060) ///< 920 samples per second
-#define ADS1015_REG_CONFIG_DR_1600SPS                                          \
-  (0x0080) ///< 1600 samples per second (default)
-#define ADS1015_REG_CONFIG_DR_2400SPS (0x00A0) ///< 2400 samples per second
-#define ADS1015_REG_CONFIG_DR_3300SPS (0x00C0) ///< 3300 samples per second
-
-#define ADS1115_REG_CONFIG_DR_8SPS (0x0000)  ///< 8 samples per second
-#define ADS1115_REG_CONFIG_DR_16SPS (0x0020) ///< 16 samples per second
-#define ADS1115_REG_CONFIG_DR_32SPS (0x0040) ///< 32 samples per second
-#define ADS1115_REG_CONFIG_DR_64SPS (0x0060) ///< 64 samples per second
-#define ADS1115_REG_CONFIG_DR_128SPS                                           \
-  (0x0080) ///< 128 samples per second (default)
-#define ADS1115_REG_CONFIG_DR_250SPS (0x00A0) ///< 250 samples per second
-#define ADS1115_REG_CONFIG_DR_475SPS (0x00C0) ///< 475 samples per second
-#define ADS1115_REG_CONFIG_DR_860SPS (0x00C0) ///< 860 samples per second
+#define ADS1X15_REG_CONFIG_RATE_MASK (0x00E0) ///< Data Rate Mask
 
 #define ADS1X15_REG_CONFIG_CMODE_MASK (0x0010) ///< CMode Mask
 #define ADS1X15_REG_CONFIG_CMODE_TRAD                                          \
@@ -140,6 +115,24 @@ typedef enum {
   GAIN_SIXTEEN = ADS1X15_REG_CONFIG_PGA_0_256V
 } adsGain_t;
 
+/** Data rates */
+#define RATE_ADS1015_128SPS (0x0000)  ///< 128 samples per second
+#define RATE_ADS1015_250SPS (0x0020)  ///< 250 samples per second
+#define RATE_ADS1015_490SPS (0x0040)  ///< 490 samples per second
+#define RATE_ADS1015_920SPS (0x0060)  ///< 920 samples per second
+#define RATE_ADS1015_1600SPS (0x0080) ///< 1600 samples per second (default)
+#define RATE_ADS1015_2400SPS (0x00A0) ///< 2400 samples per second
+#define RATE_ADS1015_3300SPS (0x00C0) ///< 3300 samples per second
+
+#define RATE_ADS1115_8SPS (0x0000)   ///< 8 samples per second
+#define RATE_ADS1115_16SPS (0x0020)  ///< 16 samples per second
+#define RATE_ADS1115_32SPS (0x0040)  ///< 32 samples per second
+#define RATE_ADS1115_64SPS (0x0060)  ///< 64 samples per second
+#define RATE_ADS1115_128SPS (0x0080) ///< 128 samples per second (default)
+#define RATE_ADS1115_250SPS (0x00A0) ///< 250 samples per second
+#define RATE_ADS1115_475SPS (0x00C0) ///< 475 samples per second
+#define RATE_ADS1115_860SPS (0x00E0) ///< 860 samples per second
+
 /**************************************************************************/
 /*!
     @brief  Sensor driver for the Adafruit ADS1X15 ADC breakouts.
@@ -149,21 +142,24 @@ class Adafruit_ADS1X15 {
 protected:
   // Instance-specific properties
   Adafruit_I2CDevice *m_i2c_dev; ///< I2C bus device
-  uint8_t m_conversionDelay;     ///< conversion deay
   uint8_t m_bitShift;            ///< bit shift amount
   adsGain_t m_gain;              ///< ADC gain
+  uint16_t m_dataRate;           ///< Data rate
 
 public:
   void begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
   uint16_t readADC_SingleEnded(uint8_t channel);
-  int16_t readADC_Differential_0_1(void);
-  int16_t readADC_Differential_2_3(void);
+  int16_t readADC_Differential_0_1();
+  int16_t readADC_Differential_2_3();
   void startComparator_SingleEnded(uint8_t channel, int16_t threshold);
   int16_t getLastConversionResults();
   void setGain(adsGain_t gain);
-  adsGain_t getGain(void);
+  adsGain_t getGain();
+  void setDataRate(uint16_t rate);
+  uint16_t getDataRate();
 
 private:
+  bool conversionComplete();
   void writeRegister(uint8_t reg, uint16_t value);
   uint16_t readRegister(uint8_t reg);
   uint8_t buffer[3];
