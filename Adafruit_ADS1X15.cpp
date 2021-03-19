@@ -36,9 +36,9 @@
 */
 /**************************************************************************/
 Adafruit_ADS1015::Adafruit_ADS1015() {
-  m_conversionDelay = ADS1015_CONVERSIONDELAY;
   m_bitShift = 4;
   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+  m_dataRate = RATE_ADS1015_1600SPS;
 }
 
 /**************************************************************************/
@@ -47,9 +47,9 @@ Adafruit_ADS1015::Adafruit_ADS1015() {
 */
 /**************************************************************************/
 Adafruit_ADS1115::Adafruit_ADS1115() {
-  m_conversionDelay = ADS1115_CONVERSIONDELAY;
   m_bitShift = 0;
   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+  m_dataRate = RATE_ADS1115_128SPS;
 }
 
 /**************************************************************************/
@@ -85,6 +85,24 @@ adsGain_t Adafruit_ADS1X15::getGain() { return m_gain; }
 
 /**************************************************************************/
 /*!
+    @brief  Sets the data rate
+
+    @param rate the data rate to use
+*/
+/**************************************************************************/
+void Adafruit_ADS1X15::setDataRate(uint16_t rate) { m_dataRate = rate; }
+
+/**************************************************************************/
+/*!
+    @brief  Gets the current data rate
+
+    @return the data rate
+*/
+/**************************************************************************/
+uint16_t Adafruit_ADS1X15::getDataRate() { return m_dataRate; }
+
+/**************************************************************************/
+/*!
     @brief  Gets a single-ended ADC reading from the specified channel
 
     @param channel ADC channel to read
@@ -103,11 +121,13 @@ uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
       ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
       ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
       ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
       ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
 
   // Set single-ended input channel
   switch (channel) {
@@ -132,7 +152,8 @@ uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
   writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(m_conversionDelay);
+  while (!conversionComplete())
+    ;
 
   // Read the conversion results
   // Shift 12-bit results right 4 bits for the ADS1015
@@ -156,11 +177,13 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
       ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
       ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
       ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
       ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
 
   // Set channels
   config |= ADS1X15_REG_CONFIG_MUX_DIFF_0_1; // AIN0 = P, AIN1 = N
@@ -172,7 +195,8 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
   writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(m_conversionDelay);
+  while (!conversionComplete())
+    ;
 
   // Read the conversion results
   uint16_t res = readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
@@ -206,11 +230,13 @@ int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
       ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
       ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
       ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
       ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
   config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
 
   // Set channels
   config |= ADS1X15_REG_CONFIG_MUX_DIFF_2_3; // AIN2 = P, AIN3 = N
@@ -222,7 +248,8 @@ int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
   writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
 
   // Wait for the conversion to complete
-  delay(m_conversionDelay);
+  while (!conversionComplete())
+    ;
 
   // Read the conversion results
   uint16_t res = readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
@@ -260,12 +287,14 @@ void Adafruit_ADS1X15::startComparator_SingleEnded(uint8_t channel,
       ADS1X15_REG_CONFIG_CLAT_LATCH |   // Latching mode
       ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
       ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1015_REG_CONFIG_DR_1600SPS |   // 1600 samples per second (default)
       ADS1X15_REG_CONFIG_MODE_CONTIN |  // Continuous conversion mode
       ADS1X15_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
 
   // Set PGA/voltage range
   config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
 
   // Set single-ended input channel
   switch (channel) {
@@ -301,9 +330,6 @@ void Adafruit_ADS1X15::startComparator_SingleEnded(uint8_t channel,
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1X15::getLastConversionResults() {
-  // Wait for the conversion to complete
-  delay(m_conversionDelay);
-
   // Read the conversion results
   uint16_t res = readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
   if (m_bitShift == 0) {
@@ -317,6 +343,15 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
     }
     return (int16_t)res;
   }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Returns true if conversion is complete, false otherwise.
+*/
+/**************************************************************************/
+bool Adafruit_ADS1X15::conversionComplete() {
+  return readRegister(ADS1X15_REG_POINTER_CONFIG) & 0x8000 != 0;
 }
 
 /**************************************************************************/
