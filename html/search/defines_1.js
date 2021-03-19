@@ -14,8 +14,5 @@ var searchData=
   ['rate_5fads1115_5f475sps',['RATE_ADS1115_475SPS',['../_adafruit___a_d_s1_x15_8h.html#a4dfc8cbe77673a578d4d9346cf006b48',1,'Adafruit_ADS1X15.h']]],
   ['rate_5fads1115_5f64sps',['RATE_ADS1115_64SPS',['../_adafruit___a_d_s1_x15_8h.html#abe3fde99c3e12d419647ca87d4e3d09d',1,'Adafruit_ADS1X15.h']]],
   ['rate_5fads1115_5f860sps',['RATE_ADS1115_860SPS',['../_adafruit___a_d_s1_x15_8h.html#afb94073e4b65ae3fd163240c4930c2ee',1,'Adafruit_ADS1X15.h']]],
-  ['rate_5fads1115_5f8sps',['RATE_ADS1115_8SPS',['../_adafruit___a_d_s1_x15_8h.html#ab6f372e80cf39e156a0ed31100dcb33b',1,'Adafruit_ADS1X15.h']]],
-  ['readadc_5fdifferential_5f0_5f1',['readADC_Differential_0_1',['../class_adafruit___a_d_s1_x15.html#a9451025a1d57b0d01eed5e5cbb3d9249',1,'Adafruit_ADS1X15']]],
-  ['readadc_5fdifferential_5f2_5f3',['readADC_Differential_2_3',['../class_adafruit___a_d_s1_x15.html#abbc2117832a544d26fe50129a53dcf33',1,'Adafruit_ADS1X15']]],
-  ['readadc_5fsingleended',['readADC_SingleEnded',['../class_adafruit___a_d_s1_x15.html#a4faf7b2d80f75fc40a70016911f9a44a',1,'Adafruit_ADS1X15']]]
+  ['rate_5fads1115_5f8sps',['RATE_ADS1115_8SPS',['../_adafruit___a_d_s1_x15_8h.html#ab6f372e80cf39e156a0ed31100dcb33b',1,'Adafruit_ADS1X15.h']]]
 ];

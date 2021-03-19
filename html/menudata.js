@@ -12,7 +12,9 @@ var menudata={children:[
 {text:"File List",url:"files.html"},
 {text:"File Members",url:"globals.html",children:[
 {text:"All",url:"globals.html",children:[
-{text:"a",url:"globals.html#index_a"}]},
+{text:"a",url:"globals.html#index_a"},
+{text:"r",url:"globals.html#index_r"}]},
 {text:"Enumerations",url:"globals_enum.html"},
 {text:"Macros",url:"globals_defs.html",children:[
-{text:"a",url:"globals_defs.html#index_a"}]}]}]}]}
+{text:"a",url:"globals_defs.html#index_a"},
+{text:"r",url:"globals_defs.html#index_r"}]}]}]}]}
