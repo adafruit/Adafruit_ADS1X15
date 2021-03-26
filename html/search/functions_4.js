@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['setdatarate',['setDataRate',['../class_adafruit___a_d_s1_x15.html#a50383ad1f401105fd4bdbc0b4935eedd',1,'Adafruit_ADS1X15']]],
-  ['setgain',['setGain',['../class_adafruit___a_d_s1_x15.html#acb8ad4ab1fb35d482200c5472c20bca9',1,'Adafruit_ADS1X15']]],
-  ['startcomparator_5fsingleended',['startComparator_SingleEnded',['../class_adafruit___a_d_s1_x15.html#acbf5ddcd0ce886b5444150f1987089d9',1,'Adafruit_ADS1X15']]]
+  ['readadc_5fdifferential_5f0_5f1',['readADC_Differential_0_1',['../class_adafruit___a_d_s1_x15.html#a9451025a1d57b0d01eed5e5cbb3d9249',1,'Adafruit_ADS1X15']]],
+  ['readadc_5fdifferential_5f2_5f3',['readADC_Differential_2_3',['../class_adafruit___a_d_s1_x15.html#abbc2117832a544d26fe50129a53dcf33',1,'Adafruit_ADS1X15']]],
+  ['readadc_5fsingleended',['readADC_SingleEnded',['../class_adafruit___a_d_s1_x15.html#a9048c868e4904071b83c74b224918fc8',1,'Adafruit_ADS1X15']]]
 ];
