@@ -110,7 +110,7 @@ uint16_t Adafruit_ADS1X15::getDataRate() { return m_dataRate; }
     @return the ADC reading
 */
 /**************************************************************************/
-uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
+int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
   if (channel > 3) {
     return 0;
   }
@@ -156,8 +156,7 @@ uint16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
     ;
 
   // Read the conversion results
-  // Shift 12-bit results right 4 bits for the ADS1015
-  return readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
+  return getLastConversionResults();
 }
 
 /**************************************************************************/
@@ -199,18 +198,7 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
     ;
 
   // Read the conversion results
-  uint16_t res = readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
-  if (m_bitShift == 0) {
-    return (int16_t)res;
-  } else {
-    // Shift 12-bit results right 4 bits for the ADS1015,
-    // making sure we keep the sign bit intact
-    if (res > 0x07FF) {
-      // negative number - extend the sign to 16th bit
-      res |= 0xF000;
-    }
-    return (int16_t)res;
-  }
+  return getLastConversionResults();
 }
 
 /**************************************************************************/
@@ -252,18 +240,7 @@ int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
     ;
 
   // Read the conversion results
-  uint16_t res = readRegister(ADS1X15_REG_POINTER_CONVERT) >> m_bitShift;
-  if (m_bitShift == 0) {
-    return (int16_t)res;
-  } else {
-    // Shift 12-bit results right 4 bits for the ADS1015,
-    // making sure we keep the sign bit intact
-    if (res > 0x07FF) {
-      // negative number - extend the sign to 16th bit
-      res |= 0xF000;
-    }
-    return (int16_t)res;
-  }
+  return getLastConversionResults();
 }
 
 /**************************************************************************/
@@ -343,6 +320,43 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
     }
     return (int16_t)res;
   }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Returns true if conversion is complete, false otherwise.
+
+    @param counts the ADC reading in raw counts
+
+    @return the ADC reading in volts
+*/
+/**************************************************************************/
+float Adafruit_ADS1X15::computeVolts(int16_t counts) {
+  // see data sheet Table 3
+  float fsRange;
+  switch (m_gain) {
+  case GAIN_TWOTHIRDS:
+    fsRange = 6.144f;
+    break;
+  case GAIN_ONE:
+    fsRange = 4.096f;
+    break;
+  case GAIN_TWO:
+    fsRange = 2.048f;
+    break;
+  case GAIN_FOUR:
+    fsRange = 1.024f;
+    break;
+  case GAIN_EIGHT:
+    fsRange = 0.512f;
+    break;
+  case GAIN_SIXTEEN:
+    fsRange = 0.256f;
+    break;
+  default:
+    fsRange = 0.0f;
+  }
+  return counts * (fsRange / (32768 >> m_bitShift));
 }
 
 /**************************************************************************/
