@@ -148,11 +148,12 @@ protected:
 
 public:
   void begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
-  uint16_t readADC_SingleEnded(uint8_t channel);
+  int16_t readADC_SingleEnded(uint8_t channel);
   int16_t readADC_Differential_0_1();
   int16_t readADC_Differential_2_3();
   void startComparator_SingleEnded(uint8_t channel, int16_t threshold);
   int16_t getLastConversionResults();
+  float computeVolts(int16_t counts);
   void setGain(adsGain_t gain);
   adsGain_t getGain();
   void setDataRate(uint16_t rate);

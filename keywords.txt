@@ -6,5 +6,8 @@ readADC_Differential_0_1	KEYWORD2
 readADC_Differential_2_3	KEYWORD2
 startComparator_SingleEnded	KEYWORD2
 getLastConversionResults	KEYWORD2
+computeVolts	KEYWORD2
 setGain	KEYWORD2
 getGain	KEYWORD2
+setDataRate	KEYWORD2
+getDataRate	KEYWORD2
