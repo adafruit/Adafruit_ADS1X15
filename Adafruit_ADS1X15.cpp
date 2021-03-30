@@ -365,7 +365,7 @@ float Adafruit_ADS1X15::computeVolts(int16_t counts) {
 */
 /**************************************************************************/
 bool Adafruit_ADS1X15::conversionComplete() {
-  return readRegister(ADS1X15_REG_POINTER_CONFIG) & 0x8000 != 0;
+  return (readRegister(ADS1X15_REG_POINTER_CONFIG) & 0x8000) != 0;
 }
 
 /**************************************************************************/
