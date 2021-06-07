@@ -84,9 +84,9 @@ Inheritance diagram for Adafruit_ADS1X15:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a06cb1e862f92c948fde7f928a11daa85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a06cb1e862f92c948fde7f928a11daa85">begin</a> (uint8_t i2c_addr=<a class="el" href="_adafruit___a_d_s1_x15_8h.html#a4b48198fb386fe0ea0326bc448caccd4">ADS1X15_ADDRESS</a>, TwoWire *wire=&amp;Wire)</td></tr>
-<tr class="memdesc:a06cb1e862f92c948fde7f928a11daa85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the HW (reads coefficients values, etc.)  <a href="#a06cb1e862f92c948fde7f928a11daa85">More...</a><br /></td></tr>
-<tr class="separator:a06cb1e862f92c948fde7f928a11daa85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38d35a467b9b29bac860fd702e142ee9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a38d35a467b9b29bac860fd702e142ee9">begin</a> (uint8_t i2c_addr=<a class="el" href="_adafruit___a_d_s1_x15_8h.html#a4b48198fb386fe0ea0326bc448caccd4">ADS1X15_ADDRESS</a>, TwoWire *wire=&amp;Wire)</td></tr>
+<tr class="memdesc:a38d35a467b9b29bac860fd702e142ee9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the HW (reads coefficients values, etc.)  <a href="#a38d35a467b9b29bac860fd702e142ee9">More...</a><br /></td></tr>
+<tr class="separator:a38d35a467b9b29bac860fd702e142ee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9048c868e4904071b83c74b224918fc8"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a9048c868e4904071b83c74b224918fc8">readADC_SingleEnded</a> (uint8_t channel)</td></tr>
 <tr class="memdesc:a9048c868e4904071b83c74b224918fc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a single-ended ADC reading from the specified channel.  <a href="#a9048c868e4904071b83c74b224918fc8">More...</a><br /></td></tr>
 <tr class="separator:a9048c868e4904071b83c74b224918fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,14 +140,14 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Sensor driver for the Adafruit ADS1X15 ADC breakouts. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a06cb1e862f92c948fde7f928a11daa85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06cb1e862f92c948fde7f928a11daa85">&#9670;&nbsp;</a></span>begin()</h2>
+<a id="a38d35a467b9b29bac860fd702e142ee9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38d35a467b9b29bac860fd702e142ee9">&#9670;&nbsp;</a></span>begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_ADS1X15::begin </td>
+          <td class="memname">bool Adafruit_ADS1X15::begin </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>i2c_addr</em> = <code><a class="el" href="_adafruit___a_d_s1_x15_8h.html#a4b48198fb386fe0ea0326bc448caccd4">ADS1X15_ADDRESS</a></code>, </td>
@@ -170,10 +170,11 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">i2c_addr</td><td>I2C address of device </td></tr>
-    <tr><td class="paramname">wire</td><td>I2C bus </td></tr>
+    <tr><td class="paramname">wire</td><td>I2C bus</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>true if successful, otherwise false </dd></dl>
 
 </div>
 </div>
