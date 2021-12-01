@@ -206,6 +206,88 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
 /**************************************************************************/
 /*!
     @brief  Reads the conversion results, measuring the voltage
+            difference between the P (AIN0) and N (AIN3) input.  Generates
+            a signed value since the difference can be either
+            positive or negative.
+    @return the ADC reading
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1X15::readADC_Differential_0_3() {
+  // Start with default values
+  uint16_t config =
+      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+
+  // Set PGA/voltage range
+  config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
+
+  // Set channels
+  config |= ADS1X15_REG_CONFIG_MUX_DIFF_0_3; // AIN0 = P, AIN3 = N
+
+  // Set 'start single-conversion' bit
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
+
+  // Write config register to the ADC
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+
+  // Wait for the conversion to complete
+  while (!conversionComplete())
+    ;
+
+  // Read the conversion results
+  return getLastConversionResults();
+}
+
+/**************************************************************************/
+/*!
+    @brief  Reads the conversion results, measuring the voltage
+            difference between the P (AIN1) and N (AIN3) input.  Generates
+            a signed value since the difference can be either
+            positive or negative.
+    @return the ADC reading
+*/
+/**************************************************************************/
+int16_t Adafruit_ADS1X15::readADC_Differential_1_3() {
+  // Start with default values
+  uint16_t config =
+      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+
+  // Set PGA/voltage range
+  config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
+
+  // Set channels
+  config |= ADS1X15_REG_CONFIG_MUX_DIFF_1_3; // AIN1 = P, AIN3 = N
+
+  // Set 'start single-conversion' bit
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
+
+  // Write config register to the ADC
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+
+  // Wait for the conversion to complete
+  while (!conversionComplete())
+    ;
+
+  // Read the conversion results
+  return getLastConversionResults();
+}
+
+/**************************************************************************/
+/*!
+    @brief  Reads the conversion results, measuring the voltage
             difference between the P (AIN2) and N (AIN3) input.  Generates
             a signed value since the difference can be either
             positive or negative.
