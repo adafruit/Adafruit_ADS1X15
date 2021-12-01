@@ -150,7 +150,10 @@ public:
   bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
   int16_t readADC_SingleEnded(uint8_t channel);
   int16_t readADC_Differential_0_1();
+  int16_t readADC_Differential_0_3();
+  int16_t readADC_Differential_1_3();
   int16_t readADC_Differential_2_3();
+  int16_t readADC_Differential(uint8_t channel);
   void startComparator_SingleEnded(uint8_t channel, int16_t threshold);
   int16_t getLastConversionResults();
   float computeVolts(int16_t counts);
