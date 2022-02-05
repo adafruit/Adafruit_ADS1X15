@@ -363,6 +363,8 @@ void Adafruit_ADS1X15::startADCReading(uint16_t mux, bool continuous) {
 /**************************************************************************/
 /*!
     @brief  Returns true if conversion is complete, false otherwise.
+
+    @return True if conversion is complete, false otherwise.
 */
 /**************************************************************************/
 bool Adafruit_ADS1X15::conversionComplete() {
