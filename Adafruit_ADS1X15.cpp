@@ -319,7 +319,7 @@ float Adafruit_ADS1X15::computeVolts(int16_t counts) {
 /**************************************************************************/
 /*!
     @brief  Non-blocking start conversion function
-    
+
     Call getLastConversionResults() once conversionComplete() returns true.
     In continuous mode, getLastConversionResults() will always return the
     latest result.
@@ -331,7 +331,7 @@ float Adafruit_ADS1X15::computeVolts(int16_t counts) {
 */
 /**************************************************************************/
 void Adafruit_ADS1X15::startADCReading(uint16_t mux, bool continuous) {
-    // Start with default values
+  // Start with default values
   uint16_t config =
       ADS1X15_REG_CONFIG_CQUE_1CONV |   // Set CQUE to any value other than
                                         // None so we can use it in RDY mode
