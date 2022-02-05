@@ -122,41 +122,7 @@ int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
     return 0;
   }
 
-  // Start with default values
-  uint16_t config =
-      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set data rate
-  config |= m_dataRate;
-
-  // Set single-ended input channel
-  switch (channel) {
-  case (0):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_0;
-    break;
-  case (1):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_1;
-    break;
-  case (2):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_2;
-    break;
-  case (3):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_3;
-    break;
-  }
-
-  // Set 'start single-conversion' bit
-  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  startADCReading(MUX_BY_CHANNEL[channel], /*continuous=*/false);
 
   // Wait for the conversion to complete
   while (!conversionComplete())
@@ -177,28 +143,7 @@ int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
-  // Start with default values
-  uint16_t config =
-      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set data rate
-  config |= m_dataRate;
-
-  // Set channels
-  config |= ADS1X15_REG_CONFIG_MUX_DIFF_0_1; // AIN0 = P, AIN1 = N
-
-  // Set 'start single-conversion' bit
-  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1, /*continuous=*/false);
 
   // Wait for the conversion to complete
   while (!conversionComplete())
@@ -218,28 +163,7 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1X15::readADC_Differential_0_3() {
-  // Start with default values
-  uint16_t config =
-      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set data rate
-  config |= m_dataRate;
-
-  // Set channels
-  config |= ADS1X15_REG_CONFIG_MUX_DIFF_0_3; // AIN0 = P, AIN3 = N
-
-  // Set 'start single-conversion' bit
-  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_3, /*continuous=*/false);
 
   // Wait for the conversion to complete
   while (!conversionComplete())
@@ -259,28 +183,7 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_3() {
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1X15::readADC_Differential_1_3() {
-  // Start with default values
-  uint16_t config =
-      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set data rate
-  config |= m_dataRate;
-
-  // Set channels
-  config |= ADS1X15_REG_CONFIG_MUX_DIFF_1_3; // AIN1 = P, AIN3 = N
-
-  // Set 'start single-conversion' bit
-  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_1_3, /*continuous=*/false);
 
   // Wait for the conversion to complete
   while (!conversionComplete())
@@ -301,28 +204,7 @@ int16_t Adafruit_ADS1X15::readADC_Differential_1_3() {
 */
 /**************************************************************************/
 int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
-  // Start with default values
-  uint16_t config =
-      ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
-      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
-      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-      ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
-      ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
-
-  // Set PGA/voltage range
-  config |= m_gain;
-
-  // Set data rate
-  config |= m_dataRate;
-
-  // Set channels
-  config |= ADS1X15_REG_CONFIG_MUX_DIFF_2_3; // AIN2 = P, AIN3 = N
-
-  // Set 'start single-conversion' bit
-  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
-
-  // Write config register to the ADC
-  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_2_3, /*continuous=*/false);
 
   // Wait for the conversion to complete
   while (!conversionComplete())
@@ -362,21 +244,7 @@ void Adafruit_ADS1X15::startComparator_SingleEnded(uint8_t channel,
   // Set data rate
   config |= m_dataRate;
 
-  // Set single-ended input channel
-  switch (channel) {
-  case (0):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_0;
-    break;
-  case (1):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_1;
-    break;
-  case (2):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_2;
-    break;
-  case (3):
-    config |= ADS1X15_REG_CONFIG_MUX_SINGLE_3;
-    break;
-  }
+  config |= MUX_BY_CHANNEL[channel];
 
   // Set the high threshold register
   // Shift 12-bit results left 4 bits for the ADS1015
@@ -446,6 +314,55 @@ float Adafruit_ADS1X15::computeVolts(int16_t counts) {
     fsRange = 0.0f;
   }
   return counts * (fsRange / (32768 >> m_bitShift));
+}
+
+/**************************************************************************/
+/*!
+    @brief  Non-blocking start conversion function
+    
+    Call getLastConversionResults() once conversionComplete() returns true.
+    In continuous mode, getLastConversionResults() will always return the
+    latest result.
+    ALERT/RDY pin is set to RDY mode, and a 8us pulse is generated every
+    time new data is ready.
+
+    @param mux mux field value
+    @param continuous continuous if set, otherwise single shot
+*/
+/**************************************************************************/
+void Adafruit_ADS1X15::startADCReading(uint16_t mux, bool continuous) {
+    // Start with default values
+  uint16_t config =
+      ADS1X15_REG_CONFIG_CQUE_1CONV |   // Set CQUE to any value other than
+                                        // None so we can use it in RDY mode
+      ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+      ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+      ADS1X15_REG_CONFIG_CMODE_TRAD;    // Traditional comparator (default val)
+
+  if (continuous) {
+    config |= ADS1X15_REG_CONFIG_MODE_CONTIN;
+  } else {
+    config |= ADS1X15_REG_CONFIG_MODE_SINGLE;
+  }
+
+  // Set PGA/voltage range
+  config |= m_gain;
+
+  // Set data rate
+  config |= m_dataRate;
+
+  // Set channels
+  config |= mux;
+
+  // Set 'start single-conversion' bit
+  config |= ADS1X15_REG_CONFIG_OS_SINGLE;
+
+  // Write config register to the ADC
+  writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+
+  // Set ALERT/RDY to RDY mode.
+  writeRegister(ADS1X15_REG_POINTER_HITHRESH, 0x8000);
+  writeRegister(ADS1X15_REG_POINTER_LOWTHRESH, 0x0000);
 }
 
 /**************************************************************************/
