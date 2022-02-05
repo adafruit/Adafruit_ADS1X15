@@ -66,7 +66,7 @@ constexpr uint16_t MUX_BY_CHANNEL[] = {
     ADS1X15_REG_CONFIG_MUX_SINGLE_1, ///< Single-ended AIN1
     ADS1X15_REG_CONFIG_MUX_SINGLE_2, ///< Single-ended AIN2
     ADS1X15_REG_CONFIG_MUX_SINGLE_3  ///< Single-ended AIN3
-}; ///< MUX config by channel
+};                                   ///< MUX config by channel
 
 #define ADS1X15_REG_CONFIG_PGA_MASK (0x0E00)   ///< PGA Mask
 #define ADS1X15_REG_CONFIG_PGA_6_144V (0x0000) ///< +/-6.144V range = Gain 2/3
