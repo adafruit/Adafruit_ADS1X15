@@ -147,7 +147,8 @@ protected:
   uint16_t m_dataRate;           ///< Data rate
 
 public:
-  bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
+  bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire
+             bool fast_mode = false);
   int16_t readADC_SingleEnded(uint8_t channel);
   int16_t readADC_Differential_0_1();
   int16_t readADC_Differential_0_3();

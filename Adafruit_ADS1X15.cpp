@@ -58,13 +58,22 @@ Adafruit_ADS1115::Adafruit_ADS1115() {
 
     @param i2c_addr I2C address of device
     @param wire I2C bus
+    @param fast_mode Run I2C at 400kHz instead of 100kHz
 
     @return true if successful, otherwise false
 */
 /**************************************************************************/
-bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire) {
+bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire,
+                             bool fast_mode) {
   m_i2c_dev = new Adafruit_I2CDevice(i2c_addr, wire);
-  return m_i2c_dev->begin();
+  if (m_i2c_dev->begin()) {
+    if (fast_mode) {
+      m_i2c_dev->setSpeed(400000);
+    }
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**************************************************************************/
