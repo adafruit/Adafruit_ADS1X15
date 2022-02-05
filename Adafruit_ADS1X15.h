@@ -160,6 +160,7 @@ public:
   adsGain_t getGain();
   void setDataRate(uint16_t rate);
   uint16_t getDataRate();
+  int16_t readADC_SingleEnded_nonblock(uint8_t channel);
 
 private:
   bool conversionComplete();

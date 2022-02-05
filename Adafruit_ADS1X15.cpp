@@ -161,6 +161,68 @@ int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
   return getLastConversionResults();
 }
 
+//
+// POPPI 05/02/2022: versione modificata di 'readADC_SingleEnded()'.
+//
+// Nonblocking version of 'readADC_SingleEnded()':
+//
+// Reads the result of PREVIOUS conversion and starts a new one on
+// specified channel, then exits immediately (returning the read value).
+//
+// If the calling interval is greater than conversion time, then the
+// function is completely non-blocking.
+//
+/**************************************************************************/
+int16_t Adafruit_ADS1X15::readADC_SingleEnded_nonblock(uint8_t channel) {
+
+  // If necessary, wait for the previous conversion to complete
+  while (!conversionComplete());
+
+  // Stores the previous conversion results
+  int16_t result = getLastConversionResults();
+
+  if (channel < 4) {
+
+    // Start with default values
+    uint16_t config =
+        ADS1X15_REG_CONFIG_CQUE_NONE |    // Disable the comparator (default val)
+        ADS1X15_REG_CONFIG_CLAT_NONLAT |  // Non-latching (default val)
+        ADS1X15_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+        ADS1X15_REG_CONFIG_CMODE_TRAD |   // Traditional comparator (default val)
+        ADS1X15_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+
+    // Set PGA/voltage range
+    config |= m_gain;
+
+    // Set data rate
+    config |= m_dataRate;
+
+    // Set single-ended input channel
+    switch (channel) {
+    case (0):
+      config |= ADS1X15_REG_CONFIG_MUX_SINGLE_0;
+      break;
+    case (1):
+      config |= ADS1X15_REG_CONFIG_MUX_SINGLE_1;
+      break;
+    case (2):
+      config |= ADS1X15_REG_CONFIG_MUX_SINGLE_2;
+      break;
+    case (3):
+      config |= ADS1X15_REG_CONFIG_MUX_SINGLE_3;
+      break;
+    }
+
+    // Set 'start single-conversion' bit
+    config |= ADS1X15_REG_CONFIG_OS_SINGLE;
+
+    // Write config register to the ADC
+    writeRegister(ADS1X15_REG_POINTER_CONFIG, config);
+  }
+
+  return(result);
+}
+
 /**************************************************************************/
 /*!
     @brief  Reads the conversion results, measuring the voltage
