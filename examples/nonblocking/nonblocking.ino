@@ -40,13 +40,9 @@ void loop(void)
     return;
   }
 
-  /* Be sure to update this value based on the IC and the gain settings! */
-  float   multiplier = 3.0F;    /* ADS1015 @ +/- 6.144V gain (12-bit results) */
-  //float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
-
   int16_t results = ads.getLastConversionResults();
 
-  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(results * multiplier); Serial.println("mV)");
+  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(ads.computeVolts(results)); Serial.println("mV)");
 
   // Start another conversion.
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1, /*continuous=*/false);
