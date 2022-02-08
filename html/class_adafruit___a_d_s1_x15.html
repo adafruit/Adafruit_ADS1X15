@@ -123,6 +123,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aff5305f00e983186453e1a62f2ac1744"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#aff5305f00e983186453e1a62f2ac1744">getDataRate</a> ()</td></tr>
 <tr class="memdesc:aff5305f00e983186453e1a62f2ac1744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current data rate.  <a href="#aff5305f00e983186453e1a62f2ac1744">More...</a><br /></td></tr>
 <tr class="separator:aff5305f00e983186453e1a62f2ac1744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a369aeece7ca9a6fb254b4330876bb573"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a369aeece7ca9a6fb254b4330876bb573">startADCReading</a> (uint16_t mux, bool continuous)</td></tr>
+<tr class="memdesc:a369aeece7ca9a6fb254b4330876bb573"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-blocking start conversion function.  <a href="#a369aeece7ca9a6fb254b4330876bb573">More...</a><br /></td></tr>
+<tr class="separator:a369aeece7ca9a6fb254b4330876bb573"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7707a24d0af4e10b93a4a1429c15fa3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a7707a24d0af4e10b93a4a1429c15fa3c">conversionComplete</a> ()</td></tr>
+<tr class="memdesc:a7707a24d0af4e10b93a4a1429c15fa3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if conversion is complete, false otherwise.  <a href="#a7707a24d0af4e10b93a4a1429c15fa3c">More...</a><br /></td></tr>
+<tr class="separator:a7707a24d0af4e10b93a4a1429c15fa3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -465,6 +471,64 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 
 <p>Gets the current data rate. </p>
 <dl class="section return"><dt>Returns</dt><dd>the data rate </dd></dl>
+
+</div>
+</div>
+<a id="a369aeece7ca9a6fb254b4330876bb573"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a369aeece7ca9a6fb254b4330876bb573">&#9670;&nbsp;</a></span>startADCReading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_ADS1X15::startADCReading </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>mux</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>continuous</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Non-blocking start conversion function. </p>
+<p>Call <a class="el" href="class_adafruit___a_d_s1_x15.html#a759eed9610a6ab25629f282a09852540" title="In order to clear the comparator, we need to read the conversion results. This function reads the las...">getLastConversionResults()</a> once <a class="el" href="class_adafruit___a_d_s1_x15.html#a7707a24d0af4e10b93a4a1429c15fa3c" title="Returns true if conversion is complete, false otherwise. ">conversionComplete()</a> returns true. In continuous mode, <a class="el" href="class_adafruit___a_d_s1_x15.html#a759eed9610a6ab25629f282a09852540" title="In order to clear the comparator, we need to read the conversion results. This function reads the las...">getLastConversionResults()</a> will always return the latest result. ALERT/RDY pin is set to RDY mode, and a 8us pulse is generated every time new data is ready.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mux</td><td>mux field value </td></tr>
+    <tr><td class="paramname">continuous</td><td>continuous if set, otherwise single shot </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7707a24d0af4e10b93a4a1429c15fa3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7707a24d0af4e10b93a4a1429c15fa3c">&#9670;&nbsp;</a></span>conversionComplete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_ADS1X15::conversionComplete </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns true if conversion is complete, false otherwise. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if conversion is complete, false otherwise. </dd></dl>
 
 </div>
 </div>
