@@ -22,6 +22,7 @@
     v1.0  - First release
     v1.1  - Added ADS1115 support - W. Earl
     v2.0  - Refactor - C. Nelson
+    v3.0  - Added Linux support - HonestQiao
 
     @section license License
 
@@ -62,10 +63,30 @@ Adafruit_ADS1115::Adafruit_ADS1115() {
     @return true if successful, otherwise false
 */
 /**************************************************************************/
+#if defined(__linux__)
+bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, int id) {
+   char i2c_device[15] = {0};
+   sprintf(i2c_device, "/dev/i2c-%d", id);
+   fd  = open(i2c_device, O_RDWR);
+    if (fd < 0)
+    {
+        return -1;
+    } else {
+        if (ioctl(fd, ADS1X15_I2C_SLAVE, i2c_addr) < 0)
+        {
+            close(fd);
+            return -2;
+        } else {
+            return true;
+        }
+    }
+}
+#else
 bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire) {
   m_i2c_dev = new Adafruit_I2CDevice(i2c_addr, wire);
   return m_i2c_dev->begin();
 }
+#endif
 
 /**************************************************************************/
 /*!
@@ -383,7 +404,11 @@ void Adafruit_ADS1X15::writeRegister(uint8_t reg, uint16_t value) {
   buffer[0] = reg;
   buffer[1] = value >> 8;
   buffer[2] = value & 0xFF;
+#if defined(__linux__)
+  write(fd, buffer, 3);
+#else
   m_i2c_dev->write(buffer, 3);
+#endif
 }
 
 /**************************************************************************/
@@ -397,7 +422,12 @@ void Adafruit_ADS1X15::writeRegister(uint8_t reg, uint16_t value) {
 /**************************************************************************/
 uint16_t Adafruit_ADS1X15::readRegister(uint8_t reg) {
   buffer[0] = reg;
+#if defined(__linux__)
+  write(fd, buffer, 1);
+  read(fd, buffer, 2);
+#else
   m_i2c_dev->write(buffer, 1);
   m_i2c_dev->read(buffer, 2);
+#endif
   return ((buffer[0] << 8) | buffer[1]);
 }
