@@ -17,20 +17,20 @@
 #define __ADS1X15_H__
 
 #if defined(__linux__)
+#include <errno.h>
+#include <fcntl.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/select.h>
-#include <sys/time.h>
-#include <errno.h>
 #include <string.h>
-#include <stdint.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#define delay(x)  usleep(1000*x)
+#define delay(x) usleep(1000 * x)
 #else
 #include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
@@ -42,7 +42,7 @@
     -----------------------------------------------------------------------*/
 #define ADS1X15_ADDRESS (0x48) ///< 1001 000 (ADDR = GND)
 #if defined(__linux__)
-#define ADS1X15_I2C_SLAVE               (0x0703)  // IIC SLAVE
+#define ADS1X15_I2C_SLAVE (0x0703) // IIC SLAVE
 #endif
 /*=========================================================================*/
 
@@ -173,9 +173,9 @@ protected:
 #else
   Adafruit_I2CDevice *m_i2c_dev; ///< I2C bus device
 #endif
-  uint8_t m_bitShift;            ///< bit shift amount
-  adsGain_t m_gain;              ///< ADC gain
-  uint16_t m_dataRate;           ///< Data rate
+  uint8_t m_bitShift;  ///< bit shift amount
+  adsGain_t m_gain;    ///< ADC gain
+  uint16_t m_dataRate; ///< Data rate
 
 public:
 #if defined(__linux__)

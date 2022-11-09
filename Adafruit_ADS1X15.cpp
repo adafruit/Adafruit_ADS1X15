@@ -65,21 +65,19 @@ Adafruit_ADS1115::Adafruit_ADS1115() {
 /**************************************************************************/
 #if defined(__linux__)
 bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, int id) {
-   char i2c_device[15] = {0};
-   sprintf(i2c_device, "/dev/i2c-%d", id);
-   fd  = open(i2c_device, O_RDWR);
-    if (fd < 0)
-    {
-        return -1;
+  char i2c_device[15] = {0};
+  sprintf(i2c_device, "/dev/i2c-%d", id);
+  fd = open(i2c_device, O_RDWR);
+  if (fd < 0) {
+    return -1;
+  } else {
+    if (ioctl(fd, ADS1X15_I2C_SLAVE, i2c_addr) < 0) {
+      close(fd);
+      return -2;
     } else {
-        if (ioctl(fd, ADS1X15_I2C_SLAVE, i2c_addr) < 0)
-        {
-            close(fd);
-            return -2;
-        } else {
-            return true;
-        }
+      return true;
     }
+  }
 }
 #else
 bool Adafruit_ADS1X15::begin(uint8_t i2c_addr, TwoWire *wire) {
