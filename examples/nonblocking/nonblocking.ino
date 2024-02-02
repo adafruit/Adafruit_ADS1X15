@@ -42,7 +42,7 @@ void loop(void)
 
   int16_t results = ads.getLastConversionResults();
 
-  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(ads.computeVolts(results)/1000); Serial.println("mV)");
+  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(ads.computeVolts(results)); Serial.println("V)");
 
   // Start another conversion.
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1, /*continuous=*/false);
