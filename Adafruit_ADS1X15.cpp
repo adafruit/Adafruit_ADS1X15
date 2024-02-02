@@ -276,7 +276,7 @@ int16_t Adafruit_ADS1X15::getLastConversionResults() {
 
 /**************************************************************************/
 /*!
-    @brief  Compute volts for the given raw counts.
+    @brief  Returns true if conversion is complete, false otherwise.
 
     @param counts the ADC reading in raw counts
 
