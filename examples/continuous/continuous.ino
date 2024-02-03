@@ -61,7 +61,7 @@ void loop(void)
 
   int16_t results = ads.getLastConversionResults();
 
-  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(ads.computeVolts(results)/1000); Serial.println("mV)");
+  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(ads.computeVolts(results)); Serial.println("V)");
 
   new_data = false;
 
