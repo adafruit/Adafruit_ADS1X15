@@ -16,14 +16,34 @@
 #ifndef __ADS1X15_H__
 #define __ADS1X15_H__
 
+#if defined(__linux__)
+#include <errno.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#define delay(x) usleep(1000 * x)
+#else
 #include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
 #include <Wire.h>
+#endif
 
 /*=========================================================================
     I2C ADDRESS/BITS
     -----------------------------------------------------------------------*/
 #define ADS1X15_ADDRESS (0x48) ///< 1001 000 (ADDR = GND)
+#if defined(__linux__)
+#define ADS1X15_I2C_SLAVE (0x0703) // IIC SLAVE
+#endif
 /*=========================================================================*/
 
 /*=========================================================================
@@ -148,13 +168,21 @@ typedef enum {
 class Adafruit_ADS1X15 {
 protected:
   // Instance-specific properties
+#if defined(__linux__)
+  int fd;
+#else
   Adafruit_I2CDevice *m_i2c_dev; ///< I2C bus device
-  uint8_t m_bitShift;            ///< bit shift amount
-  adsGain_t m_gain;              ///< ADC gain
-  uint16_t m_dataRate;           ///< Data rate
+#endif
+  uint8_t m_bitShift;  ///< bit shift amount
+  adsGain_t m_gain;    ///< ADC gain
+  uint16_t m_dataRate; ///< Data rate
 
 public:
+#if defined(__linux__)
+  bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, int id = 0);
+#else
   bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
+#endif
   int16_t readADC_SingleEnded(uint8_t channel);
   int16_t readADC_Differential_0_1();
   int16_t readADC_Differential_0_3();
