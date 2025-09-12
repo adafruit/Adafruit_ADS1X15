@@ -108,6 +108,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a759eed9610a6ab25629f282a09852540"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a759eed9610a6ab25629f282a09852540">getLastConversionResults</a> ()</td></tr>
 <tr class="memdesc:a759eed9610a6ab25629f282a09852540"><td class="mdescLeft">&#160;</td><td class="mdescRight">In order to clear the comparator, we need to read the conversion results. This function reads the last conversion results without changing the config value.  <a href="#a759eed9610a6ab25629f282a09852540">More...</a><br /></td></tr>
 <tr class="separator:a759eed9610a6ab25629f282a09852540"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a">getFsRange</a> ()</td></tr>
+<tr class="memdesc:a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current fs range for the configured gain.  <a href="#a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a">More...</a><br /></td></tr>
+<tr class="separator:a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a186c0e2b75c36ba4f851b7923fb51483"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___a_d_s1_x15.html#a186c0e2b75c36ba4f851b7923fb51483">computeVolts</a> (int16_t counts)</td></tr>
 <tr class="memdesc:a186c0e2b75c36ba4f851b7923fb51483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute volts for the given raw counts.  <a href="#a186c0e2b75c36ba4f851b7923fb51483">More...</a><br /></td></tr>
 <tr class="separator:a186c0e2b75c36ba4f851b7923fb51483"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -352,6 +355,26 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 
 <p>In order to clear the comparator, we need to read the conversion results. This function reads the last conversion results without changing the config value. </p>
 <dl class="section return"><dt>Returns</dt><dd>the last ADC reading </dd></dl>
+
+</div>
+</div>
+<a id="a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f19b6dfabb3f2c8bb3dc8f9e11a9e4a">&#9670;&nbsp;</a></span>getFsRange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Adafruit_ADS1X15::getFsRange </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the current fs range for the configured gain. </p>
+<dl class="section return"><dt>Returns</dt><dd>the fsRange for the configured gain, or zero. Zero should not be possible thereby indicating error </dd></dl>
 
 </div>
 </div>
