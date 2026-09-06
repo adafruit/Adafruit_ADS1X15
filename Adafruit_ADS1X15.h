@@ -152,6 +152,8 @@ protected:
   uint8_t m_bitShift;                   ///< bit shift amount
   adsGain_t m_gain;                     ///< ADC gain
   uint16_t m_dataRate;                  ///< Data rate
+  uint32_t m_readTimeout_ms = 0;        ///< 0 = wait forever (default)
+  bool m_lastReadTimedOut = false;      ///< set by the blocking readers
 
 public:
   bool begin(uint8_t i2c_addr = ADS1X15_ADDRESS, TwoWire *wire = &Wire);
@@ -168,12 +170,16 @@ public:
   adsGain_t getGain();
   void setDataRate(uint16_t rate);
   uint16_t getDataRate();
+  void setReadTimeout(uint32_t timeout_ms);
+  uint32_t getReadTimeout();
+  bool lastReadTimedOut();
 
   void startADCReading(uint16_t mux, bool continuous);
 
   bool conversionComplete();
 
 private:
+  bool waitForConversion();
   void writeRegister(uint8_t reg, uint16_t value);
   uint16_t readRegister(uint8_t reg);
   uint8_t buffer[3];
