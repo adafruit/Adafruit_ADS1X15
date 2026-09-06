@@ -122,9 +122,9 @@ int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
 
   startADCReading(MUX_BY_CHANNEL[channel], /*continuous=*/false);
 
-  // Wait for the conversion to complete
-  while (!conversionComplete())
-    ;
+  if (!waitForConversion()) {
+    return 0;
+  }
 
   // Read the conversion results
   return getLastConversionResults();
@@ -143,9 +143,9 @@ int16_t Adafruit_ADS1X15::readADC_SingleEnded(uint8_t channel) {
 int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
   startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1, /*continuous=*/false);
 
-  // Wait for the conversion to complete
-  while (!conversionComplete())
-    ;
+  if (!waitForConversion()) {
+    return 0;
+  }
 
   // Read the conversion results
   return getLastConversionResults();
@@ -163,9 +163,9 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_1() {
 int16_t Adafruit_ADS1X15::readADC_Differential_0_3() {
   startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_3, /*continuous=*/false);
 
-  // Wait for the conversion to complete
-  while (!conversionComplete())
-    ;
+  if (!waitForConversion()) {
+    return 0;
+  }
 
   // Read the conversion results
   return getLastConversionResults();
@@ -183,9 +183,9 @@ int16_t Adafruit_ADS1X15::readADC_Differential_0_3() {
 int16_t Adafruit_ADS1X15::readADC_Differential_1_3() {
   startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_1_3, /*continuous=*/false);
 
-  // Wait for the conversion to complete
-  while (!conversionComplete())
-    ;
+  if (!waitForConversion()) {
+    return 0;
+  }
 
   // Read the conversion results
   return getLastConversionResults();
@@ -204,9 +204,9 @@ int16_t Adafruit_ADS1X15::readADC_Differential_1_3() {
 int16_t Adafruit_ADS1X15::readADC_Differential_2_3() {
   startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_2_3, /*continuous=*/false);
 
-  // Wait for the conversion to complete
-  while (!conversionComplete())
-    ;
+  if (!waitForConversion()) {
+    return 0;
+  }
 
   // Read the conversion results
   return getLastConversionResults();
@@ -380,6 +380,67 @@ void Adafruit_ADS1X15::startADCReading(uint16_t mux, bool continuous) {
     @return True if conversion is complete, false otherwise.
 */
 /**************************************************************************/
+
+/**************************************************************************/
+/*!
+    @brief  Sets how long a blocking read waits for the conversion-ready bit.
+
+    @param timeout_ms milliseconds to wait, or 0 to wait indefinitely
+                      (the default, and the behaviour of earlier versions)
+*/
+/**************************************************************************/
+void Adafruit_ADS1X15::setReadTimeout(uint32_t timeout_ms) {
+  m_readTimeout_ms = timeout_ms;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Gets the current read timeout in milliseconds. 0 means no limit.
+
+    @return the timeout in milliseconds
+*/
+/**************************************************************************/
+uint32_t Adafruit_ADS1X15::getReadTimeout() { return m_readTimeout_ms; }
+
+/**************************************************************************/
+/*!
+    @brief  Whether the most recent blocking read gave up on the timeout.
+
+    Needed because the readers return int16_t and every possible value is a
+    legitimate conversion result, so there is no sentinel to return instead.
+
+    @return true if the last read timed out
+*/
+/**************************************************************************/
+bool Adafruit_ADS1X15::lastReadTimedOut() { return m_lastReadTimedOut; }
+
+/**************************************************************************/
+/*!
+    @brief  Waits for the conversion-ready bit, honouring the read timeout.
+
+    @return true if the conversion completed, false if it timed out
+*/
+/**************************************************************************/
+bool Adafruit_ADS1X15::waitForConversion() {
+  m_lastReadTimedOut = false;
+
+  if (m_readTimeout_ms == 0) {
+    while (!conversionComplete())
+      ;
+    return true;
+  }
+
+  // Unsigned subtraction, so this stays correct across the millis() rollover.
+  uint32_t start = millis();
+  while (!conversionComplete()) {
+    if ((millis() - start) > m_readTimeout_ms) {
+      m_lastReadTimedOut = true;
+      return false;
+    }
+  }
+  return true;
+}
+
 bool Adafruit_ADS1X15::conversionComplete() {
   return (readRegister(ADS1X15_REG_POINTER_CONFIG) & 0x8000) != 0;
 }
